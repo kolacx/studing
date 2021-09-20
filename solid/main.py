@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Car(ABC):
     def __init__(self, brand, optimal_speed):
         self.brand = brand
