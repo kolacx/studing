@@ -21,6 +21,11 @@ from engine import Diesel, Benzine
 5) 
     Все машины должны проезжать одно и тоже растояние. +
     подогнать цифры так чтобы бмв проезжало за 10 минут. +
+    
+6) 
+    Только у Mercedes время проезда занимает -6 минут от основного.
+    "Машина BMW проедит 2000m, за 1000.0 минут @ Бензин"
+
 '''
 
 
@@ -40,7 +45,8 @@ class Mercedes(Car):
 
 
 def calc_distance(dis: Distance, distance: int):
-    print(f'Машина {dis.car.brand} проедит {distance}m, за {round(dis.distance(distance), 2)} минут')
+    print(f'Машина {dis.car.brand} проедит {distance}m, за {round(dis.distance(distance), 2)} '
+          f'минут @ {dis.car.engine.name}')
 
 
 def main():

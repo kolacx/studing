@@ -7,14 +7,21 @@ class Engine(ABC):
     def __init__(self, power_kw):
         self.power_kw = power_kw
 
-    def torque(self, coef=None):
+    def torque(self, coef: float):
         return (self.power_kw * 9550) / self.ROTATION
 
 
 class Diesel(Engine):
-    def torque(self, coef=None):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.name = 'Дизель'
+
+    def torque(self, coef=1.0):
         return super().torque(coef) * coef
 
 
 class Benzine(Engine):
-    pass
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.name = 'Бензин'
+

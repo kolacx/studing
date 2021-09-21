@@ -19,4 +19,7 @@ class Distance:
         self.car = car
 
     def distance(self, km):
-        return (km / self.car.average_speed()) * 60
+        time = (km / self.car.average_speed()) * 60
+        if self.car.brand == 'Mercedes':
+            time = time - 6
+        return time
