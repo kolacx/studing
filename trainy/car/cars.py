@@ -4,14 +4,13 @@ from engine import Engine
 
 class Car(ABC):
 
-    def __init__(self, brand, engine: Engine, weight, coef=None):
+    def __init__(self, brand, engine: Engine, weight):
         self.brand = brand
         self.weight = weight
         self.engine = engine
-        self.coef = coef if coef is not None else 1.1
 
     def average_speed(self):
-        return (self.engine.power_kw * self.engine.torque(self.coef)) / self.weight
+        return (self.engine.power_kw * self.engine.torque()) / self.weight
 
 
 class Distance:
@@ -19,7 +18,10 @@ class Distance:
         self.car = car
 
     def distance(self, km):
-        time = (km / self.car.average_speed()) * 60
-        if self.car.brand == 'Mercedes':
-            time = time - 6
-        return time
+        return (km / self.car.average_speed()) * 60
+
+
+class DistanceMercedes(Distance):
+
+    def distance(self, km):
+        return ((km / self.car.average_speed()) * 60) - 6

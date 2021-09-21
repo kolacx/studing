@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from cars import Car, Distance
+from cars import Car, Distance, DistanceMercedes
 from engine import Diesel, Benzine
 
 '''
@@ -16,7 +16,7 @@ from engine import Diesel, Benzine
     
 ========================================
 4) 
-    Когда мы устанавливаем Дизельные двигателя в разные автомобили, коефициент мощностми меняется.
+    Когда мы устанавливаем Дизельные двигателя в разные автомобили, коефициент мощностми меняется. +
     
 5) 
     Все машины должны проезжать одно и тоже растояние. +
@@ -41,28 +41,29 @@ class Audi(Car):
 
 class Mercedes(Car):
     def __init__(self, engine):
-        super().__init__('Mercedes', engine, 1000, coef=1.2)
+        super().__init__('Mercedes', engine, 1000)
 
 
 def calc_distance(dis: Distance, distance: int):
     print(f'Машина {dis.car.brand} проедит {distance}m, за {round(dis.distance(distance), 2)} '
-          f'минут @ {dis.car.engine.name}')
+          f'минут @ {dis.car.engine}')
 
 
 def main():
 
-    diesel = Diesel(185.12)
-    benzine = Benzine(250.65)
+    diesel_bmw = Diesel(2, 185.12, 1)
+    diesel_mercedes = Diesel(3, 185.12, 2)
+    benzine_audi = Benzine(4, 250.65)
 
     DISTANCE = 2000
 
-    bmw = Distance(BMW(diesel))
+    bmw = Distance(BMW(diesel_bmw))
     calc_distance(bmw, DISTANCE)
 
-    audi = Distance(Audi(benzine))
+    audi = Distance(Audi(benzine_audi))
     calc_distance(audi, DISTANCE)
 
-    mercedes = Distance(Mercedes(diesel))
+    mercedes = DistanceMercedes(Mercedes(diesel_mercedes))
     calc_distance(mercedes, DISTANCE)
 
 
