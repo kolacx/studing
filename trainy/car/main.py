@@ -8,18 +8,25 @@ from abc import ABC, abstractmethod
 2)  
     Для каждой машины average_speed разный. 
     Он вычисляется в зависимости Веса втомобиля, Лошадиных сил и крутящиего момента.
-    
+
+3) 
+    У дизельнго двигателя крутящий момент на 10 процентов всегда больше.
 '''
 
 
 class Engine(ABC):
-    def __init__(self, horse_power, torque):
-        self.horse_power = horse_power
-        self.torque = torque
+    ROTATION = 3000
+
+    def __init__(self, power_kw):
+        self.power_kw = power_kw
+
+    def torque(self):
+        return (self.power_kw * 9550) / self.ROTATION
 
 
 class Diesel(Engine):
-    pass
+    def torque(self):
+        return super().torque() * 1.1
 
 
 class Benzine(Engine):
@@ -32,10 +39,9 @@ class Car(ABC):
         self.brand = brand
         self.weight = weight
         self.engine = engine
-        self.average_speed = self.average_speed()
 
     def average_speed(self):
-        return (self.engine.horse_power * self.engine.torque) / self.weight
+        return (self.engine.power_kw * self.engine.torque()) / self.weight
 
 
 class Distance:
@@ -43,7 +49,7 @@ class Distance:
         self.car = car
 
     def distance(self, km):
-        return (km / self.car.average_speed) * 60
+        return (km / self.car.average_speed()) * 60
 
 
 class BMW310(Car):
@@ -77,28 +83,23 @@ def calc_distance(dis: Distance, distance: int):
 
 def main():
 
-    d = Diesel(200, 350)
-    b = Benzine(250, 300)
+    d = Diesel(200)
+    b = Benzine(250)
 
     bmw310 = Distance(BMW310(d))
     calc_distance(bmw310, 1000)
-    print(bmw310.car.average_speed)
 
     bmw320 = Distance(BMW320(b))
     calc_distance(bmw320, 2000)
-    print(bmw320.car.average_speed)
 
     bmw330 = Distance(BMW330(d))
     calc_distance(bmw330, 3000)
-    print(bmw330.car.average_speed)
 
     bmw340 = Distance(BMW340(b))
     calc_distance(bmw340, 4000)
-    print(bmw340.car.average_speed)
 
     bmw350 = Distance(BMW350(b))
     calc_distance(bmw350, 5000)
-    print(bmw350.car.average_speed)
 
 
 if __name__ == "__main__":
