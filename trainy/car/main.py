@@ -11,6 +11,9 @@ from abc import ABC, abstractmethod
 
 3) 
     У дизельнго двигателя крутящий момент на 10 процентов всегда больше.
+    
+4) 
+    Когда мы устанавливаем Дизельные двигателя в разные автомобили, коефициент мощностми меняется.
 '''
 
 
@@ -20,13 +23,13 @@ class Engine(ABC):
     def __init__(self, power_kw):
         self.power_kw = power_kw
 
-    def torque(self):
+    def torque(self, coef=None):
         return (self.power_kw * 9550) / self.ROTATION
 
 
 class Diesel(Engine):
-    def torque(self):
-        return super().torque() * 1.1
+    def torque(self, coef=1.1):
+        return super().torque(coef) * coef
 
 
 class Benzine(Engine):
@@ -52,29 +55,24 @@ class Distance:
         return (km / self.car.average_speed()) * 60
 
 
-class BMW310(Car):
+class BMW(Car):
     def __init__(self, engine):
-        super().__init__('BMW310', engine, 1000)
+        super().__init__('BMW', engine, 1000)
 
 
-class BMW320(Car):
+class Audi(Car):
     def __init__(self, engine):
-        super().__init__('BMW320', engine, 1200)
+        super().__init__('Audi', engine, 1500)
 
 
-class BMW330(Car):
+class Mercedes(Car):
     def __init__(self, engine):
-        super().__init__('BMW330', engine, 1500)
+        super().__init__('Mercedes', engine, 2000)
+        if isinstance(engine, Diesel):
+            self.coef = 1.2
 
-
-class BMW340(Car):
-    def __init__(self, engine):
-        super().__init__('BMW340', engine, 1700)
-
-
-class BMW350(Car):
-    def __init__(self, engine):
-        super().__init__('BMW350', engine, 2000)
+    def average_speed(self):
+        return (self.engine.power_kw * self.engine.torque(self.coef)) / self.weight
 
 
 def calc_distance(dis: Distance, distance: int):
@@ -83,23 +81,20 @@ def calc_distance(dis: Distance, distance: int):
 
 def main():
 
-    d = Diesel(200)
-    b = Benzine(250)
+    diesel = Diesel(200)
+    benzine = Benzine(250)
 
-    bmw310 = Distance(BMW310(d))
-    calc_distance(bmw310, 1000)
+    bmw = Distance(BMW(diesel))
+    calc_distance(bmw, 1000)
+    print(bmw.car.engine.torque())
 
-    bmw320 = Distance(BMW320(b))
-    calc_distance(bmw320, 2000)
+    audi = Distance(Audi(benzine))
+    calc_distance(audi, 2000)
+    print(audi.car.engine.torque())
 
-    bmw330 = Distance(BMW330(d))
-    calc_distance(bmw330, 3000)
-
-    bmw340 = Distance(BMW340(b))
-    calc_distance(bmw340, 4000)
-
-    bmw350 = Distance(BMW350(b))
-    calc_distance(bmw350, 5000)
+    mercedes = Distance(Mercedes(diesel))
+    calc_distance(mercedes, 3000)
+    # print(mercedes.car.engine.torque())
 
 
 if __name__ == "__main__":
