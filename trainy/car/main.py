@@ -1,5 +1,6 @@
-from cars import Car, Performance
+from cars import Car
 from engine import Diesel, Benzine
+from rims import Tire, Rims
 
 '''
     Поставщик
@@ -54,17 +55,17 @@ from engine import Diesel, Benzine
 
 class BMW(Car):
     def __init__(self, engine, performance, formula):
-        super().__init__('BMW', engine, 1000, performance=performance, formula=formula)
+        super().__init__('BMW', engine, performance=performance, formula=formula)
 
 
 class Audi(Car):
     def __init__(self, engine, performance, formula):
-        super().__init__('Audi', engine, 1500, performance=performance, formula=formula)
+        super().__init__('Audi', engine, performance=performance, formula=formula)
 
 
 class Mercedes(Car):
     def __init__(self, engine):
-        super().__init__('Mercedes', engine, 2000)
+        super().__init__('Mercedes', engine)
 
 
 def calc_time(car: Car, distance: int):
@@ -103,15 +104,18 @@ def main():
     diesel_mercedes = Diesel(2, 100, type='Diesel')
     benzine_audi = Benzine(4, 200, type='Benzine')
 
+    tire = Tire('Michelin', 18, 245, 45)
+    rims = Rims('BBS', 18, 9, tire)
+
     DISTANCE = 1000
 
-    bmw = Car('BMW', diesel_bmw, 1000, performance=1.1, formula=formula_diesel)
+    bmw = Car('BMW', diesel_bmw, performance=1.1, formula=formula_diesel, rims=rims)
     calc_time(bmw, DISTANCE)
 
-    audi = Car('Audi', benzine_audi, 1500, formula=formula_benzine)
+    audi = Car('Audi', benzine_audi, formula=formula_benzine, rims=rims)
     calc_time(audi, DISTANCE)
 
-    mercedes = Car('Mercedes', diesel_mercedes, 2000, formula=formula_diesel)
+    mercedes = Car('Mercedes', diesel_mercedes, formula=formula_diesel, rims=rims)
     calc_time2(mercedes, DISTANCE)
 
 
