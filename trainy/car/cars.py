@@ -15,11 +15,18 @@ class Car(ABC):
 
     def get_average_speed(self):
         average_speed = self.engine.engine_load() * self.engine.engine_volume
-
-        if self.brand == 'Mercedes' and self.engine.type == 'Diesel':
-            average_speed = average_speed * 1.1
-
         return average_speed
+
+
+class Performance(Car):
+    def __init__(self, *args, **kwargs):
+        self.capacity = kwargs.pop('performance')
+        super().__init__(*args, **kwargs)
+
+    def get_average_speed(self):
+        return super().get_average_speed() * self.capacity
+
+# ========================================================
 
 
 class MercedesPower(Car):
@@ -27,5 +34,36 @@ class MercedesPower(Car):
         super().__init__(*args, **kwargs)
 
     def get_average_speed(self):
-        average_speed = self.engine.engine_load() * self.engine.engine_volume
-        return average_speed * 1.1
+        return super().get_average_speed() * 1.1
+
+
+class BMW1Power(Car):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_average_speed(self):
+        return super().get_average_speed() * 1.2
+
+
+class BMW2Power(Car):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_average_speed(self):
+        return super().get_average_speed() * 1.3
+
+
+class BMW3Power(Car):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_average_speed(self):
+        return super().get_average_speed() * 1.4
+
+
+class Audi1Power(Car):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get_average_speed(self):
+        return super().get_average_speed() * 1.5

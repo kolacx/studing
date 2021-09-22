@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from cars import Car
+from cars import Car, Performance
 from engine import Diesel, Benzine
 
 '''
@@ -41,12 +41,15 @@ from engine import Diesel, Benzine
 8) 
     Расчитать avarage_speed.
     Только у дизельного Мерседеса производительность на 10 процентов больше
+    
+9) 
+    Оказывается у нас можность двигателя меняется не только у Мерседеса, а и у других машин также.
 '''
 
 
-class BMW(Car):
-    def __init__(self, engine):
-        super().__init__('BMW', engine, 1000)
+class BMW(Performance):
+    def __init__(self, engine, performance):
+        super().__init__('BMW', engine, 1000, performance=performance)
 
 
 class Audi(Car):
@@ -87,7 +90,7 @@ def main():
 
     DISTANCE = 1000
 
-    bmw = BMW(diesel_bmw)
+    bmw = BMW(diesel_bmw, performance=1.1)
     calc_time(bmw, DISTANCE)
 
     audi = Audi(benzine_audi)
