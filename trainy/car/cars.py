@@ -8,14 +8,23 @@ class Car(ABC):
     Для класса Car поставщиком является класс Engine.
     """
 
-    def __init__(self, brand, engine: Engine, weight):
+    def __init__(self, brand, engine: Engine, weight, performance=1, formula=None):
         self.brand = brand
         self.engine = engine
         self.weight = weight
+        self.performance = performance
+        self.formula = formula
+
+        if formula is None:
+            self.formula = self._default_avg_speed_calc
 
     def get_average_speed(self):
+        return self.formula()
+
+    def _default_avg_speed_calc(self):
         average_speed = self.engine.engine_load() * self.engine.engine_volume
         return average_speed
+
 
 
 class Performance(Car):

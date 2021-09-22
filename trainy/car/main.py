@@ -52,12 +52,12 @@ from engine import Diesel, Benzine
 '''
 
 
-class BMW(Performance):
+class BMW(Car):
     def __init__(self, engine, performance, formula):
         super().__init__('BMW', engine, 1000, performance=performance, formula=formula)
 
 
-class Audi(Performance):
+class Audi(Car):
     def __init__(self, engine, performance, formula):
         super().__init__('Audi', engine, 1500, performance=performance, formula=formula)
 
@@ -105,13 +105,13 @@ def main():
 
     DISTANCE = 1000
 
-    bmw = BMW(diesel_bmw, performance=1.1, formula=formula_diesel)
+    bmw = Car('BMW', diesel_bmw, 1000, performance=1.1, formula=formula_diesel)
     calc_time(bmw, DISTANCE)
 
-    audi = Audi(benzine_audi, formula=formula_benzine)
+    audi = Car('Audi', benzine_audi, 1500, formula=formula_benzine)
     calc_time(audi, DISTANCE)
 
-    mercedes = Mercedes(diesel_mercedes)
+    mercedes = Car('Mercedes', diesel_mercedes, 2000, formula=formula_diesel)
     calc_time2(mercedes, DISTANCE)
 
 
