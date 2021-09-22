@@ -25,10 +25,12 @@ class Performance(Car):
 
     def get_average_speed(self):
         ret = super().get_average_speed() * self.performance
+
         if isinstance(self.engine, Diesel):
             ret -= 2
         elif isinstance(self.engine, Benzine):
             ret += 2
+
         return ret
 
 
