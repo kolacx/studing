@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from cars import Car, Performance
 from engine import Diesel, Benzine
 
@@ -44,6 +43,9 @@ from engine import Diesel, Benzine
     
 9) 
     Оказывается у нас можность двигателя меняется не только у Мерседеса, а и у других машин также.
+    
+10)
+    Если двигатель бензиновый то к performance + 2. А если двигатель Дизельный -2
 '''
 
 
