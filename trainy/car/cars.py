@@ -19,10 +19,10 @@ class Car(ABC):
             self.formula = self._default_avg_speed_calc
 
     def get_average_speed(self):
-        return self.formula()
+        return self.formula(self)
 
-    def _default_avg_speed_calc(self):
-        average_speed = self.engine.engine_load() * self.engine.engine_volume
+    def _default_avg_speed_calc(self, car):
+        average_speed = car.engine.engine_load() * car.engine.engine_volume
         return average_speed
 
 
