@@ -2,11 +2,17 @@ from abc import ABC, abstractmethod
 
 
 class Engine(ABC):
+    """
+    Класс Engine является Поставщиком если смотреть со стороны класса Car
+    Класс Car при этом является клиентом.
+    """
+
     ROTATION = 3000
 
-    def __init__(self, engine_volume: float, power_kw: float):
+    def __init__(self, engine_volume: float, power_kw: float, type: str):
         self.engine_volume = engine_volume
         self.power_kw = power_kw
+        self.type = type
         self.rpm = 0
 
     def start(self):
@@ -15,27 +21,15 @@ class Engine(ABC):
     def stop(self):
         self.rpm = 0
 
-    def torque(self):
-        return (self.power_kw * 9550) / self.ROTATION
+    def __repr__(self):
+        return f"{self.type}@{self.power_kw}Kw"
 
 
 class Diesel(Engine):
-    def __init__(self, engine_volume: float, power_kw: float, power_index):
-        super().__init__(engine_volume, power_kw)
-        self.type = 'Дизель'
-        self.power_index = power_index
-
-    def torque(self):
-        return (super().torque() * 1.1) / self.power_index
-
-    def __repr__(self):
-        return f"Power: {self.power_kw}, Type: {self.type}"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class Benzine(Engine):
-    def __init__(self, *args):
-        super().__init__(*args)
-        self.type = 'Бензин'
-
-    def __repr__(self):
-        return f"Power: {self.power_kw}, Type: {self.type}"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
