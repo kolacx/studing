@@ -38,7 +38,9 @@ from engine import Diesel, Benzine
     Избавится от torque +
     repr перенести в верхний класс +
      
-
+8) 
+    Расчитать avarage_speed.
+    Только у дизельного Мерседеса производительность на 10 процентов больше
 '''
 
 
@@ -57,7 +59,7 @@ class Mercedes(Car):
         super().__init__('Mercedes', engine, 2000)
 
 
-def calc_distance(car: Car, distance: int):
+def calc_time(car: Car, distance: int):
     """
         Является Решением для Килента (Main)
     """
@@ -65,7 +67,7 @@ def calc_distance(car: Car, distance: int):
     print(f'Машина {car.brand} проедит {distance}Km, за {round(time, 2)} минут @ {car.engine}')
 
 
-def calc_distance2(car: Car, distance: int):
+def calc_time2(car: Car, distance: int):
     """
         Является Решением для Килента (Main)
     """
@@ -76,23 +78,23 @@ def calc_distance2(car: Car, distance: int):
 
 def main():
     """
-        По факту является Клиентом для нашего прложения.
+        Является решением для Бизнеса.
         Его поставщики это Engine и Car
     """
     diesel_bmw = Diesel(2, 100, type='Diesel')
-    diesel_mercedes = Diesel(3, 150, type='Diesel')
+    diesel_mercedes = Diesel(2, 100, type='Diesel')
     benzine_audi = Benzine(4, 200, type='Benzine')
 
     DISTANCE = 1000
 
     bmw = BMW(diesel_bmw)
-    calc_distance(bmw, DISTANCE)
+    calc_time(bmw, DISTANCE)
 
     audi = Audi(benzine_audi)
-    calc_distance(audi, DISTANCE)
+    calc_time(audi, DISTANCE)
 
     mercedes = Mercedes(diesel_mercedes)
-    calc_distance2(mercedes, DISTANCE)
+    calc_time2(mercedes, DISTANCE)
 
 
 if __name__ == "__main__":
