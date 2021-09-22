@@ -19,21 +19,13 @@ class Car(ABC):
 
 
 class Performance(Car):
-    def __init__(self, *args, performance=1, **kwargs):
+    def __init__(self, *args, performance=1, formula, **kwargs):
         self.performance = performance
+        self.formula = formula
         super().__init__(*args, **kwargs)
 
     def get_average_speed(self):
-        ret = super().get_average_speed() * self.performance
-
-        if isinstance(self.engine, Diesel):
-            ret -= 2
-        elif isinstance(self.engine, Benzine):
-            ret += 2
-
-        return ret
-
-
+        return self.formula(self)
 
 
 

@@ -46,17 +46,20 @@ from engine import Diesel, Benzine
     
 10)
     Если двигатель бензиновый то к performance + 2. А если двигатель Дизельный -2
+    
+11) 
+    Найти способ Вынести формулу прощета get_average_speed за рамки моего решения.
 '''
 
 
 class BMW(Performance):
-    def __init__(self, engine, performance):
-        super().__init__('BMW', engine, 1000, performance=performance)
+    def __init__(self, engine, performance, formula):
+        super().__init__('BMW', engine, 1000, performance=performance, formula=formula)
 
 
-class Audi(Car):
-    def __init__(self, engine):
-        super().__init__('Audi', engine, 1500)
+class Audi(Performance):
+    def __init__(self, engine, performance, formula):
+        super().__init__('Audi', engine, 1500, performance=performance, formula=formula)
 
 
 class Mercedes(Car):
@@ -81,6 +84,16 @@ def calc_time2(car: Car, distance: int):
     print(f'Машина {car.brand} проедит {distance}Km, за {round(time, 2)} минут @ {car.engine}')
 
 
+def formula_diesel(s):
+    ret = s.engine.engine_load() * s.engine.engine_volume
+    return ret - 2
+
+
+def formula_benzine(s):
+    ret = s.engine.engine_load() * s.engine.engine_volume
+    return ret + 2
+
+
 def main():
     """
         Является решением для Бизнеса.
@@ -92,10 +105,10 @@ def main():
 
     DISTANCE = 1000
 
-    bmw = BMW(diesel_bmw, performance=1.1)
+    bmw = BMW(diesel_bmw, performance=1.1, formula=formula_diesel)
     calc_time(bmw, DISTANCE)
 
-    audi = Audi(benzine_audi)
+    audi = Audi(benzine_audi, formula=formula_benzine)
     calc_time(audi, DISTANCE)
 
     mercedes = Mercedes(diesel_mercedes)
