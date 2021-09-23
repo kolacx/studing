@@ -1,6 +1,6 @@
 from cars import Car
 from engine import Diesel, Benzine
-from rims import Tire, Rims
+from wheels import Tire, Wheel
 
 '''
     Поставщик
@@ -105,17 +105,17 @@ def main():
     benzine_audi = Benzine(4, 200, type='Benzine')
 
     tire = Tire('Michelin', 18, 245, 45)
-    rims = Rims('BBS', 18, 9, tire)
+    wheel = Wheel('BBS', 18, 9, tire)
 
     DISTANCE = 1000
 
-    bmw = Car('BMW', diesel_bmw, performance=1.1, formula=formula_diesel, rims=rims)
+    bmw = Car('BMW', diesel_bmw, performance=1.1, formula=formula_diesel, wheel=wheel)
     calc_time(bmw, DISTANCE)
 
-    audi = Car('Audi', benzine_audi, formula=formula_benzine, rims=rims)
+    audi = Car('Audi', benzine_audi, formula=formula_benzine, wheel=wheel)
     calc_time(audi, DISTANCE)
 
-    mercedes = Car('Mercedes', diesel_mercedes, formula=formula_diesel, rims=rims)
+    mercedes = Car('Mercedes', diesel_mercedes, formula=formula_diesel, wheel=wheel)
     calc_time2(mercedes, DISTANCE)
 
 

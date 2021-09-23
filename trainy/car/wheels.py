@@ -12,7 +12,7 @@ class Tire(ABC):
         return f'Brand: {self.brand} - R{self.radius} {self.width}/{self.height}'
 
 
-class Rims(ABC):
+class Wheel(ABC):
     def __init__(self, brand, radius, width, tire: Tire):
         self.brand = brand
         self.radius = radius

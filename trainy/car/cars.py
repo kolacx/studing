@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from engine import Engine
-from rims import Rims
+from wheels import Wheel
 
 
 class Car(ABC):
@@ -9,13 +9,13 @@ class Car(ABC):
     Для класса Car поставщиком является класс Engine.
     """
 
-    def __init__(self, brand, engine: Engine, rims: Rims, performance=1, formula=None):
+    def __init__(self, brand, engine: Engine, wheel: Wheel, performance=1, formula=None):
         self.brand = brand
         self.performance = performance
         self.formula = formula
 
         self.engine = engine
-        self.rims = rims
+        self.wheel = wheel
 
         if formula is None:
             self.formula = self._default_avg_speed_calc
