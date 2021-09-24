@@ -1,5 +1,6 @@
 from cars import Car
 from engine import Diesel, Benzine
+from trainy.car.transmission import Manual, Automatic
 from wheels import Tire, Wheel
 
 '''
@@ -107,16 +108,29 @@ def main():
     tire = Tire('Michelin', 18, 245, 45)
     wheel = Wheel('BBS', 18, 9, tire)
 
+    mt = Manual('ZF', [0.1, 0.2, 0.3, 0.4])
+    at = Automatic('AT ZF', [0.1, 0.2, 0.3, 0.4])
+
     DISTANCE = 1000
 
-    bmw = Car('BMW', diesel_bmw, performance=1.1, formula=formula_diesel, wheel=wheel)
+    bmw = Car('BMW', diesel_bmw, performance=1.1, formula=formula_diesel, wheel=wheel, transmission=mt)
     calc_time(bmw, DISTANCE)
 
-    audi = Car('Audi', benzine_audi, formula=formula_benzine, wheel=wheel)
+    audi = Car('Audi', benzine_audi, formula=formula_benzine, wheel=wheel, transmission=at)
     calc_time(audi, DISTANCE)
 
-    mercedes = Car('Mercedes', diesel_mercedes, formula=formula_diesel, wheel=wheel)
+    mercedes = Car('Mercedes', diesel_mercedes, formula=formula_diesel, wheel=wheel, transmission=at)
     calc_time2(mercedes, DISTANCE)
+
+    bmw.transmission.set_gear(1)
+    print(bmw.transmission.current_gear)
+    bmw.transmission.set_gear(2)
+    print(bmw.transmission.current_gear)
+    print(bmw.transmission.ratio())
+
+    audi.transmission.set_gear(4)
+    print(audi.transmission.current_gear)
+    print(audi.transmission.ratio())
 
 
 if __name__ == "__main__":
