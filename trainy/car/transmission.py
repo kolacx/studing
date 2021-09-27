@@ -39,11 +39,7 @@ class HumanInterfaceTransmission(ABC):
         pass
 
 
-class Transmission(CarInterfaceTransmission, HumanInterfaceTransmission):
-    def __init__(self, brand: str, gear_ratios: list, main_steam: float):
-        self.brand = brand
-        self.gear_ratios = gear_ratios
-        self.main_steam = main_steam
+class TransmissionInterface(CarInterfaceTransmission, HumanInterfaceTransmission):
 
     @abstractmethod
     def get_brand(self):
@@ -74,9 +70,11 @@ class Transmission(CarInterfaceTransmission, HumanInterfaceTransmission):
         pass
 
 
-class Manual(Transmission):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class Manual(TransmissionInterface):
+    def __init__(self, brand: str, gear_ratios: list, main_steam: float):
+        self.brand = brand
+        self.gear_ratios = gear_ratios
+        self.main_steam = main_steam
         self.current_gear = 0
 
     def _set_gear(self, gear):
