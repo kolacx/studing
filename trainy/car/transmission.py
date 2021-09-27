@@ -1,5 +1,73 @@
 from abc import ABC, abstractmethod
 
+'''
+Каробка.
+Абстракция коробки.
+    Что такое коробка. Коробка механихм передающий можность от двигателя к редуктору.
+    
+    Получается зависимость от двигателя, это обороты которые выдает двигатель.
+    
+    Обороты начинают крутить коробку
+    Выход коробки, передача оборотов на Редуктор.
+    
+    Получается единственное что делает коробка это изменяет обороты которые в дальнейшем передадутся редуктору в N раз.
+    
+Свойства коробки. 
+    Множитель.
+    
+    Передача дальше.
+
+====================================================
+
+Детализация коробки
+    Средне статистическая коробка имеет-
+        Передачи. - которые являются мнодителем (Список делителей)
+
+'''
+
+
+class Reducer:
+    def __init__(self, gear_ratio):
+        self.gear_ratio = gear_ratio
+
+
+class Transmission(ABC):
+    def __init__(self):
+        self.ratio = 0
+
+    def skolko_peredat_na_reductor(self, rpm):
+        return rpm / self.ratio
+
+
+class Manual(Transmission):
+    def __init__(self, ratio_list):
+        super().__init__()
+        self.ratio_list = ratio_list
+
+    def up(self):
+        self.ratio = self.ratio_list[self.ratio]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class CarInterfaceTransmission(ABC):
 
