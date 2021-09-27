@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from engine import Engine
-from trainy.car.transmission import Transmission, Manual, Automatic, CarInterfaceTransmission
+from trainy.car.transmission import CarInterfaceTransmission
 from wheels import Wheel
 
 
