@@ -122,18 +122,18 @@ def main():
     mercedes = Mercedes(diesel_mercedes, formula=formula_diesel, wheel=wheel, transmission=at)
     calc_time2(mercedes, DISTANCE)
 
-    bmw.transmission.up_gear()
+    bmw.transmission.current_gear = 1
 
     print(bmw.transmission.current_gear)
     print(bmw.current_speed(6000))
 
-    audi.transmission.up_gear()
+    audi.transmission.current_gear = 2
 
     print(audi.transmission.current_gear)
     print(audi.current_speed(6000))
 
-    print(bmw.transmission.gear_ratios)
-    print(audi.transmission.gear_ratios)
+    print(bmw.transmission.get_gear_ratios())
+    print(audi.transmission.get_gear_ratios())
 
 
 if __name__ == "__main__":
