@@ -55,18 +55,18 @@ from wheels import Tire, Wheel
 
 
 class BMW(Car):
-    def __init__(self, engine, performance, formula):
-        super().__init__('BMW', engine, performance=performance, formula=formula)
+    def __init__(self, engine, formula, wheel, transmission):
+        super().__init__('BMW', engine, formula=formula, wheel=wheel, transmission=transmission)
 
 
 class Audi(Car):
-    def __init__(self, engine, performance, formula):
-        super().__init__('Audi', engine, performance=performance, formula=formula)
+    def __init__(self, engine, formula, wheel, transmission):
+        super().__init__('Audi', engine, formula=formula, wheel=wheel, transmission=transmission)
 
 
 class Mercedes(Car):
-    def __init__(self, engine):
-        super().__init__('Mercedes', engine)
+    def __init__(self, engine, formula, wheel, transmission):
+        super().__init__('Mercedes', engine, formula=formula, wheel=wheel, transmission=transmission)
 
 
 def calc_time(car: Car, distance: int):
@@ -105,32 +105,35 @@ def main():
     diesel_mercedes = Diesel(2, 100, type='Diesel')
     benzine_audi = Benzine(4, 200, type='Benzine')
 
-    tire = Tire('Michelin', 18, 245, 45)
+    tire = Tire('Michelin', 18, 245, 50)
     wheel = Wheel('BBS', 18, 9, tire)
 
-    mt = Manual('ZF', [0.1, 0.2, 0.3, 0.4])
-    at = Automatic('AT ZF', [0.1, 0.2, 0.3, 0.4])
+    mt = Manual('ZF', [4.23, 2.53, 1.67, 1.23, 1, 0.83], 3.15)
+    at = Automatic('AT ZF', [3.99, 2.65, 1.81, 1.39, 1.16, 1], 3.62)
 
     DISTANCE = 1000
 
-    bmw = Car('BMW', diesel_bmw, performance=1.1, formula=formula_diesel, wheel=wheel, transmission=mt)
+    bmw = BMW(diesel_bmw, formula=formula_diesel, wheel=wheel, transmission=mt)
     calc_time(bmw, DISTANCE)
 
-    audi = Car('Audi', benzine_audi, formula=formula_benzine, wheel=wheel, transmission=at)
+    audi = Audi(benzine_audi, formula=formula_benzine, wheel=wheel, transmission=at)
     calc_time(audi, DISTANCE)
 
-    mercedes = Car('Mercedes', diesel_mercedes, formula=formula_diesel, wheel=wheel, transmission=at)
+    mercedes = Mercedes(diesel_mercedes, formula=formula_diesel, wheel=wheel, transmission=at)
     calc_time2(mercedes, DISTANCE)
 
-    bmw.transmission.set_gear(1)
-    print(bmw.transmission.current_gear)
-    bmw.transmission.set_gear(2)
-    print(bmw.transmission.current_gear)
-    print(bmw.transmission.ratio())
+    bmw.transmission.up_gear()
 
-    audi.transmission.set_gear(4)
+    print(bmw.transmission.current_gear)
+    print(bmw.current_speed(6000))
+
+    audi.transmission.up_gear()
+
     print(audi.transmission.current_gear)
-    print(audi.transmission.ratio())
+    print(audi.current_speed(6000))
+
+    print(bmw.transmission.gear_ratios)
+    print(audi.transmission.gear_ratios)
 
 
 if __name__ == "__main__":

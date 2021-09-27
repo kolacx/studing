@@ -2,22 +2,28 @@ from abc import ABC, abstractmethod
 
 
 class Transmission(ABC):
-    def __init__(self, brand: str, gear_ratios: list):
+    def __init__(self, brand: str, gear_ratios: list, main_steam: float):
         self.brand = brand
         self.gear_ratios = gear_ratios
-        self.current_gear = 0
-
-    def set_gear(self, gear):
-        pass
-
-    def ratio(self):
-        pass
+        self.main_steam = main_steam
 
 
 class Manual(Transmission):
+    def __init__(self, *args, current_gear=0):
+        super().__init__(*args)
+        self.current_gear = current_gear
 
-    def set_gear(self, gear):
+    def _set_gear(self, gear):
+        if gear > len(self.gear_ratios) or gear < 0:
+            raise ValueError(f'gear: {gear}. out of Gear Box range: 0 - {len(self.gear_ratios)}')
+
         self.current_gear = gear
+
+    def up_gear(self):
+        self._set_gear(self.current_gear + 1)
+
+    def down_gear(self):
+        self._set_gear(self.current_gear - 1)
 
     def ratio(self):
         return self.gear_ratios[self.current_gear - 1]
