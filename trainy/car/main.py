@@ -1,6 +1,6 @@
 from cars import Car
 from engine import Diesel, Benzine
-from trainy.car.transmission import Manual, Automatic
+from trainy.car.transmission import MT, AT, MTController, ATController
 from wheels import Tire, Wheel
 
 '''
@@ -55,18 +55,18 @@ from wheels import Tire, Wheel
 
 
 class BMW(Car):
-    def __init__(self, engine, formula, wheel, transmission):
-        super().__init__('BMW', engine, formula=formula, wheel=wheel, transmission=transmission)
+    def __init__(self, engine, formula, wheel, tr_ctrl):
+        super().__init__('BMW', engine, formula=formula, wheel=wheel, tr_ctrl=tr_ctrl)
 
 
 class Audi(Car):
-    def __init__(self, engine, formula, wheel, transmission):
-        super().__init__('Audi', engine, formula=formula, wheel=wheel, transmission=transmission)
+    def __init__(self, engine, formula, wheel, tr_ctrl):
+        super().__init__('Audi', engine, formula=formula, wheel=wheel, tr_ctrl=tr_ctrl)
 
 
 class Mercedes(Car):
-    def __init__(self, engine, formula, wheel, transmission):
-        super().__init__('Mercedes', engine, formula=formula, wheel=wheel, transmission=transmission)
+    def __init__(self, engine, formula, wheel, tr_ctrl):
+        super().__init__('Mercedes', engine, formula=formula, wheel=wheel, tr_ctrl=tr_ctrl)
 
 
 def calc_time(car: Car, distance: int):
@@ -108,32 +108,24 @@ def main():
     tire = Tire('Michelin', 18, 245, 50)
     wheel = Wheel('BBS', 18, 9, tire)
 
-    mt = Manual('ZF', [4.23, 2.53, 1.67, 1.23, 1, 0.83], 3.15)
-    at = Automatic('AT ZF', [3.99, 2.65, 1.81, 1.39, 1.16, 1], 3.62)
+    mt = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83])
+    at = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1])
+
+    mt_ctrl = MTController(mt)
+    at_ctrl = ATController(at)
+
 
     DISTANCE = 1000
 
-    bmw = BMW(diesel_bmw, formula=formula_diesel, wheel=wheel, transmission=mt)
+    bmw = BMW(diesel_bmw, formula=formula_diesel, wheel=wheel, tr_ctrl=mt_ctrl)
     calc_time(bmw, DISTANCE)
 
-    audi = Audi(benzine_audi, formula=formula_benzine, wheel=wheel, transmission=at)
+    audi = Audi(benzine_audi, formula=formula_benzine, wheel=wheel, tr_ctrl=at_ctrl)
     calc_time(audi, DISTANCE)
 
-    mercedes = Mercedes(diesel_mercedes, formula=formula_diesel, wheel=wheel, transmission=at)
+    mercedes = Mercedes(diesel_mercedes, formula=formula_diesel, wheel=wheel, tr_ctrl=at_ctrl)
     calc_time2(mercedes, DISTANCE)
 
-    bmw.transmission.current_gear = 1
-
-    print(bmw.transmission.current_gear)
-    # print(bmw.current_speed(6000))
-
-    audi.transmission.current_gear = 2
-
-    print(audi.transmission.current_gear)
-    # print(audi.current_speed(6000))
-
-    print(bmw.transmission.get_gear_ratios())
-    print(audi.transmission.get_gear_ratios())
 
 
 if __name__ == "__main__":

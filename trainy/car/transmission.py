@@ -27,7 +27,7 @@ import numpy as np
 '''
 
 
-class Transmission(ABC):
+class Transmission:
     def __init__(self, ratio_list):
         self.ratio = 0
         self.ratio_list = ratio_list
@@ -37,18 +37,12 @@ class Transmission(ABC):
 
 
 class MT(Transmission):
-    def set_manual_gear(self, gear):
+    def set_gear(self, gear):
         self.ratio = self.ratio_list[gear - 1]
 
 
-class AT(Transmission):
-    def up(self):
-        gear = self.ratio_list.index(self.ratio) + 1
-        self.ratio = self.ratio_list[gear]
-
-    def down(self):
-        gear = self.ratio_list.index(self.ratio) - 1
-        self.ratio = self.ratio_list[gear]
+class AT(MT):
+    pass
 
 
 class CVT(AT):
@@ -57,7 +51,46 @@ class CVT(AT):
         super().__init__(ratio_list=self.ratio_list)
 
 
+class Controller(ABC):
+    def __init__(self, transmission, controller):
+        self.transmission = transmission
+        self.control = controller
 
+
+class MTController(Controller):
+    def __init__(self, transmission: MT):
+        super().__init__(transmission, controller=self)
+
+    def neutral(self):
+        pass
+
+    def shift(self, gear):
+        self.transmission.set_gear(gear)
+
+
+class ATController(Controller):
+    def __init__(self, transmission: AT):
+        super().__init__(transmission, controller=self)
+
+    def parking(self):
+        self.transmission.ratio = 0
+
+    def revers(self):
+        self.transmission.ratio = -self.transmission.ratio
+
+    def neutral(self):
+        self.transmission.ratio = 0
+
+    def drive(self):
+        self.transmission.ratio = self.transmission.ratio_list[0]
+
+    def up(self):
+        gear = self.transmission.ratio_list.index(self.transmission.ratio) + 1
+        self.transmission.set_gear(gear)
+
+    def down(self):
+        gear = self.transmission.ratio_list.index(self.transmission.ratio) - 1
+        self.transmission.set_gear(gear)
 
 
 

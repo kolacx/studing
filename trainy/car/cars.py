@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from engine import Engine
-from trainy.car.transmission import CarInterfaceTransmission
+from trainy.car.transmission import Controller
 from wheels import Wheel
 
 
@@ -10,12 +10,12 @@ class Car(ABC):
     Для класса Car поставщиком является класс Engine.
     """
 
-    def __init__(self, brand, engine: Engine, wheel: Wheel, transmission: CarInterfaceTransmission, formula=None):
+    def __init__(self, brand, engine: Engine, wheel: Wheel, tr_ctrl: Controller, formula=None):
         self.brand = brand
         self.formula = formula
 
         self.engine = engine
-        self.transmission = transmission
+        self.tr_ctrl = tr_ctrl
         self.wheel = wheel
 
         if formula is None:
