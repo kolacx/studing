@@ -125,12 +125,12 @@ def main():
     bmw.transmission.current_gear = 1
 
     print(bmw.transmission.current_gear)
-    print(bmw.current_speed(6000))
+    # print(bmw.current_speed(6000))
 
     audi.transmission.current_gear = 2
 
     print(audi.transmission.current_gear)
-    print(audi.current_speed(6000))
+    # print(audi.current_speed(6000))
 
     print(bmw.transmission.get_gear_ratios())
     print(audi.transmission.get_gear_ratios())

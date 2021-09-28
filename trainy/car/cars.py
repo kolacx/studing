@@ -34,14 +34,14 @@ class Car(ABC):
         average_speed = car.engine.engine_load() * car.engine.engine_volume
         return average_speed
 
-    def current_speed(self, rpm):
-        if self.transmission.get_current_gear() == 0:
-            return 0
-
-        r_cm = (self.wheel.radius * 2.54) * 10
-        profile_height = self.wheel.tire.width * (self.wheel.tire.height / 100)
-        w_h = (profile_height * 2 + r_cm) / 10
-
-        speed = rpm * (w_h / ((self.transmission.get_main_steam() * self.transmission.get_ratio()) * 530.616))
-
-        return speed
+    # def current_speed(self, rpm):
+    #     if self.transmission.get_current_gear() == 0:
+    #         return 0
+    #
+    #     r_cm = (self.wheel.radius * 2.54) * 10
+    #     profile_height = self.wheel.tire.width * (self.wheel.tire.height / 100)
+    #     w_h = (profile_height * 2 + r_cm) / 10
+    #
+    #     speed = rpm * (w_h / ((self.transmission.get_main_steam() * self.transmission.get_ratio()) * 530.616))
+    #
+    #     return speed
