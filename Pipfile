@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 numpy = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.8"
