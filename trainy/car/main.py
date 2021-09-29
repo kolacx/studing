@@ -127,6 +127,5 @@ def main():
     calc_time2(mercedes, DISTANCE)
 
 
-
 if __name__ == "__main__":
     main()
