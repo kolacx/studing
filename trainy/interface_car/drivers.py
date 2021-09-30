@@ -5,6 +5,7 @@ import tty
 
 from tqdm import tqdm
 from cars import Car
+from transmissions import MT
 
 
 def is_data():
@@ -12,9 +13,10 @@ def is_data():
 
 
 class Driver:
-    def __init__(self, car: Car):
+    def __init__(self, car: Car, ctrl):
         self.car = car
         self.rpm = tqdm(total=car.engine.max_rpm)
+        self.ctrl = ctrl
 
     def drive(self):
         old_settings = termios.tcgetattr(sys.stdin)
@@ -37,11 +39,9 @@ class Driver:
                         if self.car.engine.rpm != 0:
                             self.stop_engine()
 
-                    if c == 'u':
-                        self.rpm.update(100)
+                    self.ctrl.do(c)
 
-                    if c == 'd':
-                        self.rpm.update(-100)
+                    self.display(rpm=self.car.engine.rpm)
 
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
@@ -52,8 +52,18 @@ class Driver:
 
     def start_engine(self):
         self.car.engine.rpm = 800
-        self.display(rpm=800)
 
     def stop_engine(self):
         self.car.engine.rpm = 0
-        self.display(rpm=0)
+
+
+class ControlMT:
+    def __init__(self, transmission: MT):
+        self.mt = transmission
+
+    def set_gear(self, gear):
+        self.mt.set_gear(gear)
+
+    def do(self, c):
+        if c == 'a':
+            self.set_gear(1)
