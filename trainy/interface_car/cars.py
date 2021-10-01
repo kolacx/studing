@@ -11,6 +11,12 @@ class Car(ABC):
     def start_engine(self):
         self.engine.start_engine()
 
+    def get_rpm(self):
+        return self.engine.rpm
+
+    def get_max_rpm(self):
+        return self.engine.max_rpm
+
     def get_len_gearbox(self):
         return self.transmission.get_len_gearbox()
 
@@ -26,7 +32,7 @@ class Car(ABC):
     def rpm_down(self):
         self.engine.rpm -= 100
 
-    def current_speed(self):
+    def get_current_speed(self):
         speed = self.engine.rpm * (64.3 / (((self.transmission.ratio + 1) * 3.9) * 530.616))
         return round(speed, 2)
 
