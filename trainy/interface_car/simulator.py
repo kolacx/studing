@@ -2,7 +2,7 @@ import select
 import sys
 import termios
 import tty
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from tqdm import tqdm
 from cars import Car
@@ -32,11 +32,7 @@ class Simulator(ABC):
                     if c == 's':
                         self.start_engine()
 
-                    if c == 'a':
-                        self.gear_up()
-
-                    if c == 'z':
-                        self.gear_down()
+                    self.control(c)
 
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
@@ -45,12 +41,26 @@ class Simulator(ABC):
     def start_engine(self):
         print('Start Engine')
 
-    def gear_up(self):
-        print('Gear Up')
-
-    def gear_down(self):
-        print('Gear Down')
+    @abstractmethod
+    def control(self, c):
+        pass
 
 
 class SimulatorMT(Simulator):
-    pass
+    def set_gear(self, gear):
+        print(f'Set {gear}-gear')
+
+    def control(self, c):
+        if c in ['1', '2', '3', '4', '5', '6']:
+            self.set_gear(c)
+
+
+class SimulatorAT(Simulator):
+    def up_gear(self):
+        print('Next Gear')
+
+    def down_gear(self):
+        print('Down Gear')
+
+    def control(self, c):
+        ...
