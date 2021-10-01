@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 numpy = "*"
 tqdm = "*"
+alive-progress = "*"
+colorama = "*"
 
 [requires]
 python_version = "3.8"
