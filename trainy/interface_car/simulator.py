@@ -63,4 +63,7 @@ class SimulatorAT(Simulator):
         print('Down Gear')
 
     def control(self, c):
-        ...
+        if c == 'a':
+            self.up_gear()
+        elif c == 'z':
+            self.down_gear()
