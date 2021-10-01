@@ -36,24 +36,5 @@ class MT(GearBox):
             return self.ratio_list.index(self.ratio) + 1
 
 
-class ControlMT:
-    def __init__(self, transmission: MT):
-        self.mt = transmission
-
-    def catch(self, symbol):
-        if symbol in [str(i+1) for i in range(self.mt.get_len_gearbox())]:
-            self.switch_gear(symbol)
-
-    def switch_gear(self, gear):
-        self.mt.set_gear(gear)
-
-    def get_current_gear(self):
-        return self.mt.current_gear()
-
-
 class AT(MT):
-    pass
-
-
-class ControlAT:
     pass

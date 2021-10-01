@@ -1,7 +1,7 @@
-from cars import Car
-from simulator import Simulator
+from cars import CarMT, CarAT
+from simulator import SimulatorMT, SimulatorAT
 from engines import Engine
-from transmissions import MT, AT, ControlMT
+from transmissions import MT, AT
 
 
 if __name__ == "__main__":
@@ -10,9 +10,13 @@ if __name__ == "__main__":
     mt = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83])
     at = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1])
     engine = Engine(6500)
-    m_ctrl = ControlMT(mt)
+    car_mt = CarMT(engine, mt)
+    car_at = CarAT(engine, at)
 
-    car = Car(engine, mt)
+    choise = input('Select Tarnsmission: \n 1 - MT, 2-AT \n')
 
-    d = Simulator(car)
-    d.drive()
+    car = SimulatorMT(car_mt) if choise == "1" else SimulatorAT(car_at)
+
+    print(f'You at {car.car.transmission.__class__}')
+
+    car.drive()

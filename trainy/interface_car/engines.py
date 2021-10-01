@@ -5,4 +5,4 @@ class Engine:
         self.max_rpm = max_rpm
 
     def start_engine(self):
-        self.rpm = 0 if self.rpm > 0 else 750
+        self.rpm = 750 if self.rpm == 0 else 0
