@@ -63,6 +63,12 @@ class SimulatorAT(Simulator):
         self.n_mode = False
         self.m_mode = False
 
+    def set_mode_permission(self, p_mode=False, d_mode=False, n_mode=False, m_mode=False):
+        self.p_mode = p_mode
+        self.d_mode = d_mode
+        self.n_mode = n_mode
+        self.m_mode = m_mode
+
     def quit(self):
         if self.p_mode:
             raise Exception('Stop Engine / Exit')
@@ -78,42 +84,36 @@ class SimulatorAT(Simulator):
         print('Down Gear')
 
     def manual_mode(self):
-        self.p_mode = False
-        self.n_mode = False
-        self.d_mode = False
-        self.m_mode = True
+        self.set_mode_permission(m_mode=True)
 
         print(f'Activate Manual Mode => M <=')
 
     def drive_mode(self):
-        self.p_mode = False
-        self.n_mode = False
-        self.d_mode = True
-        self.m_mode = False
+        self.set_mode_permission(d_mode=True)
 
         print(f'Activate Drive Mode => D <=')
 
     def neutral_mode(self):
-        self.p_mode = False
-        self.d_mode = False
-        self.n_mode = True
-        self.m_mode = False
+        self.set_mode_permission(n_mode=True)
 
         print(f'Activate Neutral Mode => N <=')
 
     def parking_mode(self):
-        self.p_mode = True
-        self.d_mode = False
-        self.n_mode = False
-        self.m_mode = False
+        self.set_mode_permission(p_mode=True)
 
         print(f'Activate Neutral Mode => P <=')
 
     def controls(self, key):
         if key == 'a':
-            self.up_gear()
+            if self.m_mode:
+                self.up_gear()
+            else:
+                print('First activate manual Mode => M <=')
         elif key == 'z':
-            self.down_gear()
+            if self.m_mode:
+                self.down_gear()
+            else:
+                print('First activate manual Mode => M <=')
         elif key == 'n':
             self.neutral_mode()
         elif key == 'd':
@@ -122,3 +122,5 @@ class SimulatorAT(Simulator):
             self.quit()
         elif key == 'p':
             self.parking_mode()
+        elif key == 'm':
+            self.manual_mode()
