@@ -13,7 +13,7 @@ if __name__ == "__main__":
     car_mt = CarMT(engine, mt)
     car_at = CarAT(engine, at)
 
-    choise = input('Select Tarnsmission: \n 1 - MT, 2-AT \n')
+    choise = input('Select Transmission: \n 1 - MT, 2-AT \n')
 
     car = SimulatorMT(car_mt) if choise == "1" else SimulatorAT(car_at)
 

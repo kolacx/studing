@@ -24,25 +24,20 @@ class Simulator(ABC):
 
             while True:
                 if is_data():
-                    c = sys.stdin.read(1)
+                    key = sys.stdin.read(1)
 
-                    if c == 'q':
+                    try:
+                        self.controls(key)
+                    except Exception as e:
+                        print(e)
                         break
-
-                    if c == 's':
-                        self.start_engine()
-
-                    self.control(c)
 
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
             print('\n')
 
-    def start_engine(self):
-        print('Start Engine')
-
     @abstractmethod
-    def control(self, c):
+    def controls(self, key):
         pass
 
 
@@ -50,20 +45,80 @@ class SimulatorMT(Simulator):
     def set_gear(self, gear):
         print(f'Set {gear}-gear')
 
-    def control(self, c):
-        if c in ['1', '2', '3', '4', '5', '6']:
-            self.set_gear(c)
+    def quit(self):
+        raise Exception('Stop Engine / Exit')
+
+    def controls(self, key):
+        if key in ['1', '2', '3', '4', '5', '6']:
+            self.set_gear(key)
+        elif key == 'q':
+            self.quit()
 
 
 class SimulatorAT(Simulator):
+    def __init__(self, car):
+        super().__init__(car)
+        self.p_mode = False
+        self.d_mode = False
+        self.n_mode = False
+        self.m_mode = False
+
+    def quit(self):
+        if self.p_mode:
+            raise Exception('Stop Engine / Exit')
+        else:
+            print(f'Before Exit activate Parking Mode => P <=')
+
     def up_gear(self):
+        self.manual_mode()
         print('Next Gear')
 
     def down_gear(self):
+        self.manual_mode()
         print('Down Gear')
 
-    def control(self, c):
-        if c == 'a':
+    def manual_mode(self):
+        self.p_mode = False
+        self.n_mode = False
+        self.d_mode = False
+        self.m_mode = True
+
+        print(f'Activate Manual Mode => M <=')
+
+    def drive_mode(self):
+        self.p_mode = False
+        self.n_mode = False
+        self.d_mode = True
+        self.m_mode = False
+
+        print(f'Activate Drive Mode => D <=')
+
+    def neutral_mode(self):
+        self.p_mode = False
+        self.d_mode = False
+        self.n_mode = True
+        self.m_mode = False
+
+        print(f'Activate Neutral Mode => N <=')
+
+    def parking_mode(self):
+        self.p_mode = True
+        self.d_mode = False
+        self.n_mode = False
+        self.m_mode = False
+
+        print(f'Activate Neutral Mode => P <=')
+
+    def controls(self, key):
+        if key == 'a':
             self.up_gear()
-        elif c == 'z':
+        elif key == 'z':
             self.down_gear()
+        elif key == 'n':
+            self.neutral_mode()
+        elif key == 'd':
+            self.drive_mode()
+        elif key == 'q':
+            self.quit()
+        elif key == 'p':
+            self.parking_mode()
