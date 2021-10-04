@@ -76,11 +76,9 @@ class SimulatorAT(Simulator):
             print(f'Before Exit activate Parking Mode => P <=')
 
     def up_gear(self):
-        self.manual_mode()
         print('Next Gear')
 
     def down_gear(self):
-        self.manual_mode()
         print('Down Gear')
 
     def manual_mode(self):
