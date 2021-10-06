@@ -53,6 +53,17 @@ class SimulatorMT(Simulator):
         print(f'SIMULATOR Set {gear}-gear')
         self.car.set_gear(gear)
 
+    def rpm_up(self):
+        self.car.rpm_up()
+        print(f'RPM - {self.car.engine.rpm}, RPM-RATIO - {self.get_current_rpm_ratio()}', end='\r')
+
+    def rpm_down(self):
+        self.car.rpm_down()
+        print(f'RPM - {self.car.engine.rpm}, RPM-RATIO - {self.get_current_rpm_ratio()}', end='\r')
+
+    def get_current_rpm_ratio(self):
+        return self.car.get_current_rpm_ratio()
+
     def quit(self):
         raise Exception('Stop Engine / Exit')
 
@@ -63,6 +74,10 @@ class SimulatorMT(Simulator):
             self.quit()
         elif key == 's':
             self.start_engine()
+        elif key == 'a':
+            self.rpm_up()
+        elif key == 'z':
+            self.rpm_down()
 
 
 class SimulatorAT(Simulator):

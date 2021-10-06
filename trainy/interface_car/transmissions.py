@@ -5,6 +5,9 @@ class GearBox(ABC):
     def __init__(self):
         self.ratio = 0.0
 
+    def get_ratio(self):
+        return self.ratio
+
 
 class MT(GearBox):
     def __init__(self, ratio_list: list):
