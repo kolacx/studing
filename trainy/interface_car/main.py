@@ -72,7 +72,8 @@ class Smt(SimulatorMT):
         super().__init__(car, controls)
 
     def get_controls(self, control_map):
-        control_map['r'] = self.quit
+        control_map["r"] = self.quit
+        control_map["e"] = control_map.pop("q")
         return control_map
 
 
