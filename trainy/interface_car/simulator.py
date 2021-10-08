@@ -5,7 +5,7 @@ import tty
 from abc import ABC, abstractmethod
 
 from cars import Car, CarMT, CarAT
-from enum import ATGearboxModes
+from enums import ATGearboxModes
 
 
 def is_data():
