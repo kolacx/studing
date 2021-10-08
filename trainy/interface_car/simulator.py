@@ -22,7 +22,8 @@ class Simulator(ABC):
     def get_ctrl_key(self):
         default_ctrl = {
             "q": self.quit,
-            "s": self.start_engine
+            "s": self.start_engine,
+            "x": self.stop_engine
         }
 
         return default_ctrl
@@ -55,6 +56,9 @@ class Simulator(ABC):
     def start_engine(self, key):
         print('SIMULATOR ABC - start_engine')
 
+    def stop_engine(self, key):
+        print('SIMULATOR ABC - stop_engine')
+
 
 class SimulatorMT(Simulator):
     def __init__(self, car: CarMT):
@@ -63,10 +67,11 @@ class SimulatorMT(Simulator):
     def get_ctrl_key(self):
         ctrl = super().get_ctrl_key()
         ctrl.update({
-            "1": self.set_gear,
             "a": self.rpm_up,
             "z": self.rpm_down
         })
+
+        ctrl.update({str(i): self.set_gear for i in range(1, 7)})
 
         return ctrl
 
