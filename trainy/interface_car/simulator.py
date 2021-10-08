@@ -4,8 +4,8 @@ import termios
 import tty
 from abc import ABC, abstractmethod
 
-from tqdm import tqdm
 from cars import Car, CarMT, CarAT
+from enum import ATGearboxModes
 
 
 def is_data():
@@ -15,12 +15,14 @@ def is_data():
 class Simulator(ABC):
     def __init__(self, car: Car, controls_map: dict = None):
         self.car = car
-        self.controls_map = controls_map if controls_map is not None else self.get_default_ctrl()
+        self.controls_map = self.get_ctrl_key()
+        if controls_map is not None:
+            self.controls_map.update(controls_map)
 
-    def get_default_ctrl(self):
+    def get_ctrl_key(self):
         default_ctrl = {
-            "q": self._quit,
-            "s": self._start_engine
+            "q": self.quit,
+            "s": self.start_engine
         }
 
         return default_ctrl
@@ -35,10 +37,12 @@ class Simulator(ABC):
                 if is_data():
                     key = sys.stdin.read(1)
 
+                    func = self.controls_map.get(key, None)
+                    if func is None:
+                        continue
+
                     try:
-                        for k, v in self.controls_map.items():
-                            if k == key:
-                                v()
+                        func(key)
                     except Exception as e:
                         print(e)
                         break
@@ -46,138 +50,83 @@ class Simulator(ABC):
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
-    def _quit(self):
+    def quit(self, key):
         raise Exception('ABC Stop Engine / Exit')
 
-    def _start_engine(self):
+    def start_engine(self, key):
         print('SIMULATOR ABC - start_engine')
 
 
 class SimulatorMT(Simulator):
-    def __init__(self, car: CarMT, controls_map: dict):
-        self.ctrl = self.get_controls(controls_map)
-        super().__init__(car, self.ctrl)
-        self.car = car      # !!!!!!!!!!!!!!!!!!!!!!!!
+    def __init__(self, car: CarMT):
+        super().__init__(car)
 
-    def get_controls(self, control_map):
-        return control_map
+    def get_ctrl_key(self):
+        ctrl = super().get_ctrl_key()
+        ctrl.update({
+            "1": self.set_gear,
+            "a": self.rpm_up,
+            "z": self.rpm_down
+        })
 
-    # ============================================
-
-    def start_engine(self):
-        print('SIMULATOR MT - start_engine')
-        self.car.start_engine()
+        return ctrl
 
     def set_gear(self, gear):
         print(f'SIMULATOR Set {gear}-gear')
-        # self.car.set_gear(gear)
 
-    def rpm_up(self):
-        # self.car.rpm_up()
-        print(f'RPM - {self.car.engine.rpm}, RPM-RATIO - {self.get_current_rpm_ratio()}', end='\r')
+    def rpm_up(self, key):
+        print(f'RPM - 1000, RPM-RATIO - 000.00', end='\r')
 
-    def rpm_down(self):
-        # self.car.rpm_down()
-        print(f'RPM - {self.car.engine.rpm}, RPM-RATIO - {self.get_current_rpm_ratio()}', end='\r')
-
-    def get_current_rpm_ratio(self):
-        return self.car.get_current_rpm_ratio()
-
-    def quit(self):
-        raise Exception('Stop Engine / Exit')
-
-    # def controls(self, key):
-    #     if key in ['1', '2', '3', '4', '5', '6']:
-    #         self.set_gear(key)
-    #     elif key == 'q':
-    #         self.quit()
-    #     elif key == 's':
-    #         self.start_engine()
-    #     elif key == 'a':
-    #         self.rpm_up()
-    #     elif key == 'z':
-    #         self.rpm_down()
+    def rpm_down(self, key):
+        print(f'RPM - 0900, RPM-RATIO - 000.00', end='\r')
 
 
 class SimulatorAT(Simulator):
-    def __init__(self, car: CarAT, controls_map: dict):
-        super().__init__(car, controls_map)
-        self.car = car  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #
-    #     self.p_mode = False
-    #     self.d_mode = False
-    #     self.n_mode = False
-    #     self.m_mode = False
-    #
-    # def set_mode_permission(self, p_mode=True, d_mode=False, n_mode=False, m_mode=False):
-    #     self.p_mode = p_mode
-    #     self.d_mode = d_mode
-    #     self.n_mode = n_mode
-    #     self.m_mode = m_mode
-    #
-    # def quit(self):
-    #     if self.p_mode:
-    #         raise Exception('Stop Engine / Exit')
-    #     else:
-    #         print(f'Before Exit activate Parking Mode => P <=')
-    #
-    # def start_engine(self):
-    #     print('SIMULATOR AT - start_engine')
-    #     # self.car.start_engine()
-    #
-    # def up_gear(self):
-    #     print('SIMULATOR AT - UP Gear')
-    #     # self.car.up_gear()
-    #
-    # def down_gear(self):
-    #     print('SIMULATOR AT - DOWN Gear')
-    #     # self.car.down_gear()
-    #
-    # def manual_mode(self):
-    #     self.set_mode_permission(m_mode=True)
-    #
-    #     print(f'Manual Mode => M <=')
-    #
-    # def drive_mode(self):
-    #     self.set_mode_permission(d_mode=True)
-    #
-    #     print(f'Drive Mode => D <=')
-    #
-    # def neutral_mode(self):
-    #     self.set_mode_permission(n_mode=True)
-    #
-    #     print(f'Neutral Mode => N <=')
-    #
-    # def parking_mode(self):
-    #     self.set_mode_permission(p_mode=True)
-    #
-    #     print(f'Parking Mode => P <=')
-    #
-    # def controls(self, key):
-    #     if key == 'a':
-    #         if self.m_mode:
-    #             self.up_gear()
-    #         else:
-    #             print('First active manual Mode => M <=')
-    #     elif key == 'z':
-    #         if self.m_mode:
-    #             self.down_gear()
-    #         else:
-    #             print('First active manual Mode => M <=')
-    #     elif key == 'n':
-    #         self.neutral_mode()
-    #     elif key == 'd':
-    #         self.drive_mode()
-    #     elif key == 'q':
-    #         self.quit()
-    #     elif key == 'p':
-    #         self.parking_mode()
-    #     elif key == 'm':
-    #         self.manual_mode()
-    #     elif key == 's':
-    #         self.start_engine()
+    def __init__(self, car: CarAT):
+        super().__init__(car)
+        self.mode: ATGearboxModes = ATGearboxModes.parking
+
+    def get_ctrl_key(self):
+        ctrl = super().get_ctrl_key()
+        ctrl.update({
+            "a": self.up_gear,
+            "z": self.down_gear,
+            "n": self.neutral_mode,
+            "d": self.drive_mode,
+            "p": self.parking_mode,
+            "m": self.manual_mode,
+        })
+
+        return ctrl
+
+    def up_gear(self, key):
+        if self.mode == ATGearboxModes.manual:
+            print('SIMULATOR AT - UP Gear')
+        else:
+            print('First Activated Manual Mode => press M <==')
+
+    def down_gear(self, key):
+        if self.mode == ATGearboxModes.manual:
+            print('SIMULATOR AT - Down Gear')
+        else:
+            print('First Activated Manual Mode => press M <==')
+
+    def manual_mode(self, key):
+        self.mode = ATGearboxModes.manual
+        print(f'Manual Mode => M <=')
+
+    def drive_mode(self, key):
+        self.mode = ATGearboxModes.drive
+        print(f'Drive Mode => D <=')
+
+    def neutral_mode(self, key):
+        self.mode = ATGearboxModes.neutral
+        print(f'Neutral Mode => N <=')
+
+    def parking_mode(self, key):
+        self.mode = ATGearboxModes.parking
+        print(f'Parking Mode => P <=')
 
 
 class SimulatorCVT(SimulatorAT):
     pass
-
