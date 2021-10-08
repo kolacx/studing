@@ -37,12 +37,11 @@ class Simulator(ABC):
                 if is_data():
                     key = sys.stdin.read(1)
 
-                    func = self.controls_map.get(key, None)
-                    if func is None:
+                    if self.controls_map.get(key, None) is None:
                         continue
 
                     try:
-                        func(key)
+                        self.controls_map[key](key)
                     except Exception as e:
                         print(e)
                         break
