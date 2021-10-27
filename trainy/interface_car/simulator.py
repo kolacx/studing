@@ -3,9 +3,18 @@ import sys
 import termios
 import tty
 from abc import ABC, abstractmethod
+from typing import Dict
 
 from cars import Car, CarMT, CarAT
 from enums import ATGearboxModes
+
+'''
+
+как я реализовал абстрактную симуляцию
+и ее взаимоотношения с ее чаилдами
+
+
+'''
 
 
 def is_data():
@@ -19,11 +28,12 @@ class Simulator(ABC):
         if controls_map is not None:
             self.controls_map.update(controls_map)
 
-    def get_ctrl_key(self):
+    @abstractmethod
+    def get_ctrl_key(self) -> Dict[str, callable]:
         default_ctrl = {
             "q": self.quit,
-            "s": self.start_engine,
-            "x": self.stop_engine
+            "s": self.start_car,
+            "x": self.stop_car
         }
 
         return default_ctrl
@@ -38,12 +48,13 @@ class Simulator(ABC):
                 if is_data():
                     key = sys.stdin.read(1)
 
-                    if self.controls_map.get(key, None) is None:
+                    func = self.controls_map.get(key, None)
+                    if func is None:
                         continue
 
                     try:
-                        self.controls_map[key](key)
-                    except Exception as e:
+                        func(key)
+                    except StopIteration as e:
                         print(e)
                         break
 
@@ -51,25 +62,22 @@ class Simulator(ABC):
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
     def quit(self, key):
-        raise Exception('ABC Stop Engine / Exit')
+        raise StopIteration('ABC Stop Engine / Exit')
 
-    def start_engine(self, key):
-        print('SIMULATOR ABC - start_engine')
+    def start_car(self, key):
+        print('SIMULATOR ABC - start_car')
 
-    def stop_engine(self, key):
-        print('SIMULATOR ABC - stop_engine')
+    def stop_car(self, key):
+        print('SIMULATOR ABC - stop_car')
 
 
 class SimulatorMT(Simulator):
     def __init__(self, car: CarMT):
         super().__init__(car)
+        self.car = car
 
     def get_ctrl_key(self):
         ctrl = super().get_ctrl_key()
-        ctrl.update({
-            "a": self.rpm_up,
-            "z": self.rpm_down
-        })
 
         ctrl.update({str(i): self.set_gear for i in range(1, 7)})
 
@@ -77,12 +85,7 @@ class SimulatorMT(Simulator):
 
     def set_gear(self, gear):
         print(f'SIMULATOR Set {gear}-gear')
-
-    def rpm_up(self, key):
-        print(f'RPM - 1000, RPM-RATIO - 000.00', end='\r')
-
-    def rpm_down(self, key):
-        print(f'RPM - 0900, RPM-RATIO - 000.00', end='\r')
+        # self.car.set_gear(gear)
 
 
 class SimulatorAT(Simulator):

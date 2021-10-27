@@ -15,18 +15,14 @@ Simulatro MT
     Описывать какето состояние Н переменными.
     
     Состояние ЕНум.
+    
+    
+    ==============================================
+    
+    
+    
+    
 '''
-
-
-class Smt(SimulatorMT):
-
-    def get_ctrl_key(self):
-        c = super().get_ctrl_key()
-        c.update({"e": self.qqq})
-        return c
-
-    def qqq(self):
-        raise Exception('eeee')
 
 
 if __name__ == "__main__":
@@ -45,7 +41,3 @@ if __name__ == "__main__":
     print(f'You at {car.car.transmission.__class__}')
 
     car.drive()
-
-    # s = SimulatorAT(car_at)
-    #
-    # s.mode = 1
