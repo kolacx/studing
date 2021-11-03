@@ -4,12 +4,10 @@ class Engine:
         self.rpm = 0
         self.max_rpm = max_rpm
 
-    def start_engine(self):
-        print('ENGINE - start_engine')
+    def start(self):
         self.rpm = 750 if self.rpm == 0 else 0
 
-    def stop_engine(self):
-        print('ENGINE stop')
+    def stop(self):
         self.rpm = 0
 
     def set_rpm(self, rpm):

@@ -1,3 +1,4 @@
+import os
 import select
 import sys
 import termios
@@ -7,6 +8,7 @@ from typing import Dict
 
 from cars import Car, CarMT, CarAT
 from enums import ATGearboxModes
+from display import Display
 
 '''
 
@@ -22,9 +24,10 @@ def is_data():
 
 
 class Simulator(ABC):
-    def __init__(self, car: Car, controls_map: dict = None):
+    def __init__(self, car: Car, display: Display, controls_map: dict = None):
         self.car = car
         self.controls_map = self.get_ctrl_key()
+        self.display = display
         if controls_map is not None:
             self.controls_map.update(controls_map)
 
@@ -39,6 +42,7 @@ class Simulator(ABC):
         return default_ctrl
 
     def drive(self):
+        os.system('clear')
         old_settings = termios.tcgetattr(sys.stdin)
 
         try:
@@ -54,15 +58,17 @@ class Simulator(ABC):
 
                     try:
                         func(key)
+                        self.display.show()
                     except StopIteration as e:
                         print(e)
                         break
 
         finally:
             termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+            self.display.shutdown()
 
     def quit(self, key):
-        raise StopIteration('ABC Stop Engine / Exit')
+        raise StopIteration()
 
     def start_car(self, key):
         print('SIMULATOR ABC - start_car')
@@ -72,26 +78,37 @@ class Simulator(ABC):
 
 
 class SimulatorMT(Simulator):
-    def __init__(self, car: CarMT):
-        super().__init__(car)
-        self.car = car
+    car: CarMT
+
+    def __init__(self, car, display):
+        super().__init__(car, display)
 
     def get_ctrl_key(self):
         ctrl = super().get_ctrl_key()
+        ctrl.update({str(i): self.set_gear for i in range(1, self.car.gear_length() + 1)})
 
-        ctrl.update({str(i): self.set_gear for i in range(1, 7)})
+        ctrl.update({
+            'a': self.speed_up,
+            'z': self.speed_down
+        })
 
         return ctrl
 
+    def start_car(self, key):
+        self.car.start()
+
     def set_gear(self, gear):
-        print(f'SIMULATOR Set {gear}-gear')
-        # self.car.set_gear(gear)
+        self.car.shift_gear(gear)
+
+    def speed_up(self, key):
+        self.car.speed_up()
+
+    def speed_down(self, key):
+        self.car.speed_down()
 
 
 class SimulatorAT(Simulator):
-    def __init__(self, car: CarAT):
-        super().__init__(car)
-        self.mode: ATGearboxModes = ATGearboxModes.parking
+    car: CarAT
 
     def get_ctrl_key(self):
         ctrl = super().get_ctrl_key()

@@ -2,24 +2,12 @@ from cars import CarMT, CarAT
 from simulator import SimulatorMT, SimulatorAT
 from engines import Engine
 from transmissions import MT, AT
-
+from display import Display
 
 '''
-Simulatro MT
-    Не нравится что q == quit
-    НАслетоватся от Simulator MT и сделать так чтобы quit был равен - ?
-    
-    Есть Какойто питоновский вариант.
-    
-    Пытаюсь описать остоя ние Н переменными.
-    Описывать какето состояние Н переменными.
-    
-    Состояние ЕНум.
-    
-    
-    ==============================================
-    
-    
+План капкан.
+
+1) Добавить Симуляцию автоматической коробки передач.
     
     
 '''
@@ -36,8 +24,12 @@ if __name__ == "__main__":
 
     choise = input('Select Transmission: \n 1 - MT, 2-AT \n')
 
-    car = SimulatorMT(car_mt) if choise == "1" else SimulatorAT(car_at)
+    car = car_mt if choise == "1" else car_at
 
-    print(f'You at {car.car.transmission.__class__}')
+    display = Display(car)
 
-    car.drive()
+    simulator = SimulatorMT(car, display) if choise == "1" else SimulatorAT(car, display)
+    simulator.drive()
+
+
+
