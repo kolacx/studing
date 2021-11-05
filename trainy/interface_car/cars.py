@@ -31,37 +31,37 @@ class CarMT(Car):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
-        self.status = CarStatus.run_engine
+        self.status = CarStatus.info_run_engine
 
     def start(self):
         self.engine.start()
-        self.status = CarStatus.started
+        self.status = CarStatus.engine_runed
 
     def stop(self):
         self.engine.stop()
-        self.status = CarStatus.stoped
+        self.status = CarStatus.engine_stoped
 
     def speed_up(self):
         new_rpm = self.engine.get_current_rpm() + 100
 
         if self.engine.get_current_rpm() == 0:
-            self.status = CarStatus.run_engine
+            self.status = CarStatus.info_run_engine
         elif new_rpm > self.engine.max_rpm:
             self.engine.set_rpm(new_rpm - 500)
-            self.status = CarStatus.rpm_cutoff
+            self.status = CarStatus.info_rpm_cutoff
         else:
             self.engine.set_rpm(new_rpm)
-            self.status = CarStatus.rpm_up
+            self.status = CarStatus.info_rpm_up
 
     def speed_down(self):
         new_rpm = self.engine.get_current_rpm() - 100
 
         if new_rpm < 0:
             self.engine.set_rpm(0)
-            self.status = CarStatus.engine_down
+            self.status = CarStatus.error_engine_down
         else:
             self.engine.set_rpm(new_rpm)
-            self.status = CarStatus.rpm_down
+            self.status = CarStatus.info_rpm_down
 
     def shift_gear(self, gear):
         self.transmission.set_gear(gear)
