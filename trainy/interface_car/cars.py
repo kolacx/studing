@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from ecu import EngineECU
+from engines import Engine
 from transmissions import GearBox, AT, MT
 from enums import CarStatus
 
 
 class Car(ABC):
-    def __init__(self, engine_ecu: EngineECU, transmission: GearBox):
-        self.engine_ecu = engine_ecu
+    def __init__(self, engine: Engine, transmission: GearBox):
+        self.engine = engine
         self.transmission = transmission
 
     @abstractmethod
@@ -34,20 +34,34 @@ class CarMT(Car):
         self.status = CarStatus.run_engine
 
     def start(self):
-        self.engine_ecu.start()
+        self.engine.start()
         self.status = CarStatus.started
 
     def stop(self):
-        self.engine_ecu.stop()
+        self.engine.stop()
         self.status = CarStatus.stoped
 
     def speed_up(self):
-        new_rpm = self.engine_ecu.get_current_rpm() + 100
-        self.status = self.engine_ecu.set_rpm(new_rpm)
+        new_rpm = self.engine.get_current_rpm() + 100
+
+        if self.engine.get_current_rpm() == 0:
+            self.status = CarStatus.run_engine
+        elif new_rpm > self.engine.max_rpm:
+            self.engine.set_rpm(new_rpm - 500)
+            self.status = CarStatus.rpm_cutoff
+        else:
+            self.engine.set_rpm(new_rpm)
+            self.status = CarStatus.rpm_up
 
     def speed_down(self):
-        new_rpm = self.engine_ecu.get_current_rpm() - 100
-        self.status = self.engine_ecu.set_rpm(new_rpm)
+        new_rpm = self.engine.get_current_rpm() - 100
+
+        if new_rpm < 0:
+            self.engine.set_rpm(0)
+            self.status = CarStatus.engine_down
+        else:
+            self.engine.set_rpm(new_rpm)
+            self.status = CarStatus.rpm_down
 
     def shift_gear(self, gear):
         self.transmission.set_gear(gear)
@@ -60,15 +74,15 @@ class CarAT(Car):
     transmission: AT
 
     def start(self):
-        self.engine_ecu.start()
+        self.engine.start()
 
     def stop(self):
-        self.engine_ecu.stop()
+        self.engine.stop()
 
     def speed_up(self):
-        new_rpm = self.engine_ecu.get_current_rpm() + 100
-        self.engine_ecu.set_rpm(new_rpm)
+        new_rpm = self.engine.get_current_rpm() + 100
+        self.engine.set_rpm(new_rpm)
 
     def speed_down(self):
-        new_rpm = self.engine_ecu.get_current_rpm() - 100
-        self.engine_ecu.set_rpm(new_rpm)
+        new_rpm = self.engine.get_current_rpm() - 100
+        self.engine.set_rpm(new_rpm)

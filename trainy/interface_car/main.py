@@ -2,8 +2,7 @@ from cars import CarMT, CarAT
 from simulator import SimulatorMT, SimulatorAT
 from engines import Engine
 from transmissions import MT, AT
-from display import Display
-from ecu import EngineECU
+from display import DisplayForMyCar
 
 '''
 План капкан.
@@ -21,16 +20,15 @@ if __name__ == "__main__":
     at = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1])
 
     engine = Engine(6500)
-    ecu_engine = EngineECU(engine)
 
-    car_mt = CarMT(ecu_engine, mt)
-    # car_at = CarAT(engine, at)
+    car_mt = CarMT(engine, mt)
+    car_at = CarAT(engine, at)
 
     choise = input('Select Transmission: \n 1 - MT, 2-AT \n')
 
-    car = car_mt if choise == "1" else None
+    car = car_mt if choise == "1" else car_at
 
-    display = Display(car)
+    display = DisplayForMyCar(car)
 
     simulator = SimulatorMT(car, display) if choise == "1" else SimulatorAT(car, display)
     simulator.drive()

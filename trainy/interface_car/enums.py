@@ -1,4 +1,3 @@
-import colorama as color
 
 
 class ATGearboxModes:
@@ -22,8 +21,8 @@ class bcolors:
 
 
 class CarStatus:
-    started = 'Engine is Started'
-    stoped = 'Engine is Stoped'
+    started = 'Engine is Started. Bo-Bo-Bo-Bo-Bo-Bo-Bo'
+    stoped = 'Engine is Stoped...'
     run_engine = bcolors.FAIL + 'First Start Engine <S>' + bcolors.ENDC
     rpm_cutoff = bcolors.FAIL + 'RATA-TA-TA-TA-TA-TA-TA-TA' + bcolors.ENDC
     rpm_up = 'RPM UP'
