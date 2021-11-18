@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from engines import Engine
 from transmissions import GearBox, AT, MT
-from enums import CarStatus
+from enums import CarStatus, ATGearboxModes
 
 
 class Car(ABC):
@@ -31,37 +31,20 @@ class CarMT(Car):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
-        self.status = CarStatus.info_run_engine
 
     def start(self):
         self.engine.start()
-        self.status = CarStatus.engine_runed
 
     def stop(self):
         self.engine.stop()
-        self.status = CarStatus.engine_stoped
 
     def speed_up(self):
-        new_rpm = self.engine.get_current_rpm() + 100
-
-        if self.engine.get_current_rpm() == 0:
-            self.status = CarStatus.info_run_engine
-        elif new_rpm > self.engine.max_rpm:
-            self.engine.set_rpm(new_rpm - 500)
-            self.status = CarStatus.info_rpm_cutoff
-        else:
-            self.engine.set_rpm(new_rpm)
-            self.status = CarStatus.info_rpm_up
+        new_rpm = self.engine.get_rpm() + 100
+        self.engine.set_rpm(new_rpm)
 
     def speed_down(self):
-        new_rpm = self.engine.get_current_rpm() - 100
-
-        if new_rpm < 0:
-            self.engine.set_rpm(0)
-            self.status = CarStatus.error_engine_down
-        else:
-            self.engine.set_rpm(new_rpm)
-            self.status = CarStatus.info_rpm_down
+        new_rpm = self.engine.get_rpm() - 100
+        self.engine.set_rpm(new_rpm)
 
     def shift_gear(self, gear):
         self.transmission.set_gear(gear)
@@ -70,19 +53,76 @@ class CarMT(Car):
         return self.transmission.gear_length()
 
 
-class CarAT(Car):
+class CarAT(CarMT):
     transmission: AT
 
-    def start(self):
-        self.engine.start()
+    def __init__(self, car, display):
+        super().__init__(car, display)
+        self.mode = ATGearboxModes.parking
 
-    def stop(self):
-        self.engine.stop()
+    def __requirements_for_up_shift(self, rpm):
+        if rpm < 3000:
+            return False
+        elif self.transmission.get_gear() == self.transmission.gear_length():
+            return False
+        else:
+            return True
 
     def speed_up(self):
-        new_rpm = self.engine.get_current_rpm() + 100
-        self.engine.set_rpm(new_rpm)
+        if self.mode == ATGearboxModes.drive:
+            new_rpm = self.engine.get_rpm() + 100
+            cutoff = 500
+
+            if new_rpm < self.engine.get_max_rpm():
+                self.engine.set_rpm(new_rpm)
+            else:
+                new_rpm -= cutoff
+                self.engine.set_rpm(new_rpm)
+
+            if self.__requirements_for_up_shift(new_rpm):
+                self.transmission.up_set_gear()
+                self.engine.set_rpm(new_rpm - 1000)
+
+    def __requirements_for_down_shift(self, rpm):
+        if rpm > 1000:
+            return False
+        elif self.transmission.get_gear() == 1:
+            return False
+        else:
+            return True
 
     def speed_down(self):
-        new_rpm = self.engine.get_current_rpm() - 100
-        self.engine.set_rpm(new_rpm)
+        if self.mode == ATGearboxModes.drive:
+            new_rpm = self.engine.get_rpm() - 100
+
+            if new_rpm > 750:
+                self.engine.set_rpm(new_rpm)
+            else:
+                self.engine.set_rpm(0)
+
+            if self.__requirements_for_down_shift(new_rpm):
+                self.transmission.down_set_gear()
+                self.engine.set_rpm(new_rpm + 1000)
+
+    def up_gear(self):
+        if self.mode == ATGearboxModes.manual:
+            self.transmission.up_set_gear()
+
+    def down_gear(self):
+        if self.mode == ATGearboxModes.manual:
+            self.transmission.down_set_gear()
+
+    def manual_mode(self):
+        self.mode = ATGearboxModes.manual
+
+    def drive_mode(self):
+        self.mode = ATGearboxModes.drive
+        self.transmission.set_gear(1)
+
+    def neutral_mode(self):
+        self.mode = ATGearboxModes.neutral
+        self.transmission.set_gear(0)
+
+    def parking_mode(self):
+        self.mode = ATGearboxModes.parking
+        self.transmission.set_gear(0)

@@ -9,6 +9,7 @@ from typing import Dict
 from cars import Car, CarMT, CarAT
 from enums import ATGearboxModes
 from display import Display
+# from engines import EngineRunningException
 
 '''
 
@@ -42,7 +43,7 @@ class Simulator(ABC):
         return default_ctrl
 
     def drive(self):
-        os.system('clear')
+        # os.system('clear')
         old_settings = termios.tcgetattr(sys.stdin)
 
         try:
@@ -89,13 +90,17 @@ class SimulatorMT(Simulator):
 
         ctrl.update({
             'a': self.speed_up,
-            'z': self.speed_down
+            'z': self.speed_down,
+            'x': self.stop_car
         })
 
         return ctrl
 
     def start_car(self, key):
         self.car.start()
+
+    def stop_car(self, key):
+        self.car.stop()
 
     def set_gear(self, gear):
         self.car.shift_gear(gear)
@@ -119,38 +124,39 @@ class SimulatorAT(Simulator):
             "d": self.drive_mode,
             "p": self.parking_mode,
             "m": self.manual_mode,
+            "x": self.stop_car,
+            "r": self.speed_up,
+            "f": self.speed_down
         })
 
         return ctrl
 
+    def start_car(self, key):
+        self.car.start()
+
+    def stop_car(self, key):
+        self.car.stop()
+
+    def speed_up(self, key):
+        self.car.speed_up()
+
+    def speed_down(self, key):
+        self.car.speed_down()
+
     def up_gear(self, key):
-        if self.mode == ATGearboxModes.manual:
-            print('SIMULATOR AT - UP Gear')
-        else:
-            print('First Activated Manual Mode => press M <==')
+        self.car.up_gear()
 
     def down_gear(self, key):
-        if self.mode == ATGearboxModes.manual:
-            print('SIMULATOR AT - Down Gear')
-        else:
-            print('First Activated Manual Mode => press M <==')
+        self.car.down_gear()
 
     def manual_mode(self, key):
-        self.mode = ATGearboxModes.manual
-        print(f'Manual Mode => M <=')
+        self.car.manual_mode()
 
     def drive_mode(self, key):
-        self.mode = ATGearboxModes.drive
-        print(f'Drive Mode => D <=')
+        self.car.drive_mode()
 
     def neutral_mode(self, key):
-        self.mode = ATGearboxModes.neutral
-        print(f'Neutral Mode => N <=')
+        self.car.neutral_mode()
 
     def parking_mode(self, key):
-        self.mode = ATGearboxModes.parking
-        print(f'Parking Mode => P <=')
-
-
-class SimulatorCVT(SimulatorAT):
-    pass
+        self.car.parking_mode()

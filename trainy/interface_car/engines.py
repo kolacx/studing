@@ -1,16 +1,21 @@
+
+
 class Engine:
     def __init__(self, max_rpm):
-        self.rpm = 0
-        self.max_rpm = max_rpm
+        self._rpm = 0
+        self._max_rpm = max_rpm
 
     def start(self):
-        self.rpm = 750 if self.rpm == 0 else 0
+        self.set_rpm(750)
 
     def stop(self):
-        self.rpm = 0
+        self.set_rpm(0)
 
     def set_rpm(self, rpm):
-        self.rpm = rpm
+        self._rpm = rpm
 
-    def get_current_rpm(self):
-        return self.rpm
+    def get_rpm(self):
+        return self._rpm
+
+    def get_max_rpm(self):
+        return self._max_rpm
