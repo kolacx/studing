@@ -30,19 +30,25 @@ from display import DisplayForMyCar, DisplayForMyCarAT
 Старт в котором есть IF
 Есть в разрабатыванной сущности чтото что может повлиять на основное поведение. 
 Задать ему условия.
+
+
+
+Информация о машине общая
+Сделать диапазон переключение передча для разных коробок
+
 '''
 
 
 if __name__ == "__main__":
     print("GOs")
 
-    mt = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83])
-    at = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1])
+    mt = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'ZF 6')
+    at = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'FE 5')
 
     engine = Engine(6500)
 
-    car_mt = CarMT(engine, mt)
-    car_at = CarAT(engine, at)
+    car_mt = CarMT(engine, mt, 'BMW')
+    car_at = CarAT(engine, at, 'Mercedes')
 
     choise = input('Select Transmission: \n 1 - MT, 2-AT \n')
 

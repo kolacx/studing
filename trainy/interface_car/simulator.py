@@ -106,10 +106,10 @@ class SimulatorMT(Simulator):
         self.car.shift_gear(gear)
 
     def speed_up(self, key):
-        self.car.speed_up()
+        self.car.speed_up(100)
 
     def speed_down(self, key):
-        self.car.speed_down()
+        self.car.speed_down(100)
 
 
 class SimulatorAT(Simulator):
@@ -138,10 +138,10 @@ class SimulatorAT(Simulator):
         self.car.stop()
 
     def speed_up(self, key):
-        self.car.speed_up()
+        self.car.speed_up(100)
 
     def speed_down(self, key):
-        self.car.speed_down()
+        self.car.speed_down(100)
 
     def up_gear(self, key):
         self.car.up_gear()

@@ -2,13 +2,17 @@ from abc import ABC, abstractmethod
 
 
 class GearBox(ABC):
-    def __init__(self):
+    def __init__(self, name):
+        self.name = name
         self._ratio = 0.0
+
+    def __str__(self):
+        return self.name
 
 
 class MT(GearBox):
-    def __init__(self, ratio_list: list):
-        super().__init__()
+    def __init__(self, ratio_list: list, name):
+        super().__init__(name)
         self._ratio_list = ratio_list
         self._ratio_list.insert(0, 0.0)
 

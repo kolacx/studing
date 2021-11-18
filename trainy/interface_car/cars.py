@@ -5,7 +5,8 @@ from enums import CarStatus, ATGearboxModes
 
 
 class Car(ABC):
-    def __init__(self, engine: Engine, transmission: GearBox):
+    def __init__(self, engine: Engine, transmission: GearBox, name):
+        self.name = name
         self.engine = engine
         self.transmission = transmission
 
@@ -18,19 +19,21 @@ class Car(ABC):
         pass
 
     @abstractmethod
-    def speed_up(self):
+    def speed_up(self, acsel):
         pass
 
     @abstractmethod
-    def speed_down(self):
+    def speed_down(self, acsel):
         pass
 
 
 class CarMT(Car):
     transmission: MT
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, *kwargs)
+    def __init__(self, engine, transmission, name, cutoff=500, engine_idle=750):
+        super().__init__(engine, transmission, name)
+        self.cutoff = cutoff
+        self.engine_idle = engine_idle
 
     def start(self):
         self.engine.start()
@@ -38,12 +41,12 @@ class CarMT(Car):
     def stop(self):
         self.engine.stop()
 
-    def speed_up(self):
-        new_rpm = self.engine.get_rpm() + 100
+    def speed_up(self, acsel):
+        new_rpm = self.engine.get_rpm() + acsel
         self.engine.set_rpm(new_rpm)
 
-    def speed_down(self):
-        new_rpm = self.engine.get_rpm() - 100
+    def speed_down(self, acsel):
+        new_rpm = self.engine.get_rpm() - acsel
         self.engine.set_rpm(new_rpm)
 
     def shift_gear(self, gear):
@@ -56,53 +59,59 @@ class CarMT(Car):
 class CarAT(CarMT):
     transmission: AT
 
-    def __init__(self, car, display):
-        super().__init__(car, display)
+    def __init__(self, car, display, name, cutoff=500, engine_idle=750, rpm_for_down=1000, rpm_for_up=1000,
+                 default_shift_height=3000, default_shift_low=1000):
+
+        super().__init__(car, display, name, cutoff, engine_idle)
         self.mode = ATGearboxModes.parking
 
+        self.rpm_for_down = rpm_for_down
+        self.rpm_for_up = rpm_for_up
+        self.default_shift_height = default_shift_height
+        self.default_shift_low = default_shift_low
+
     def __requirements_for_up_shift(self, rpm):
-        if rpm < 3000:
+        if rpm < self.default_shift_height:
             return False
         elif self.transmission.get_gear() == self.transmission.gear_length():
             return False
         else:
             return True
 
-    def speed_up(self):
+    def speed_up(self, acsel):
         if self.mode == ATGearboxModes.drive:
-            new_rpm = self.engine.get_rpm() + 100
-            cutoff = 500
+            new_rpm = self.engine.get_rpm() + acsel
 
             if new_rpm < self.engine.get_max_rpm():
                 self.engine.set_rpm(new_rpm)
             else:
-                new_rpm -= cutoff
+                new_rpm -= self.cutoff
                 self.engine.set_rpm(new_rpm)
 
             if self.__requirements_for_up_shift(new_rpm):
                 self.transmission.up_set_gear()
-                self.engine.set_rpm(new_rpm - 1000)
+                self.engine.set_rpm(new_rpm - self.rpm_for_up)
 
     def __requirements_for_down_shift(self, rpm):
-        if rpm > 1000:
+        if rpm > self.default_shift_low:
             return False
         elif self.transmission.get_gear() == 1:
             return False
         else:
             return True
 
-    def speed_down(self):
+    def speed_down(self, acsel):
         if self.mode == ATGearboxModes.drive:
-            new_rpm = self.engine.get_rpm() - 100
+            new_rpm = self.engine.get_rpm() - acsel
 
-            if new_rpm > 750:
+            if new_rpm > self.engine_idle:
                 self.engine.set_rpm(new_rpm)
             else:
                 self.engine.set_rpm(0)
 
             if self.__requirements_for_down_shift(new_rpm):
                 self.transmission.down_set_gear()
-                self.engine.set_rpm(new_rpm + 1000)
+                self.engine.set_rpm(new_rpm + self.rpm_for_down)
 
     def up_gear(self):
         if self.mode == ATGearboxModes.manual:
