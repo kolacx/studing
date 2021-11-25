@@ -41,15 +41,13 @@ class Display(ABC):
         pass
 
 
-class DisplayForMyCar(Display):
+class DisplayMT(Display):
     car: CarMT
 
     def __init__(self, car: CarMT):
         super().__init__(car)
 
-        self.car_info_bar = tqdm(desc=f"{self.car.name} with transmission MT - {self.car.transmission.name}",
-                                 bar_format="You at car: {desc}")
-
+        self.car_info_bar = tqdm(desc=f"{self.car}", bar_format="You at: {desc}")
         self.rpm_bar = tqdm(total=self.car.engine.get_max_rpm(), bar_format="RPM | {bar}{n_fmt} - {total_fmt}")
         self.gear_bar = tqdm(total=self.car.transmission.gear_length(), bar_format="Gear {n_fmt} of {total_fmt}")
 
@@ -79,13 +77,13 @@ transmission_AT_mode = {
 }
 
 
-class DisplayForMyCarAT(Display):
+class DisplayAT(Display):
     car: CarAT
 
     def __init__(self, car: CarAT):
         super().__init__(car)
 
-        self.car_info_bar = tqdm(desc=f"{self.car.name} with transmission AT - {self.car.transmission.name}", bar_format="You at car: {desc}")
+        self.car_info_bar = tqdm(desc=f"{self.car}", bar_format="You at: {desc}")
         self.status_bar = tqdm(desc=transmission_AT_mode.get(self.car.mode), bar_format="Status GearBox: {desc}")
         self.rpm_bar = tqdm(total=self.car.engine.get_max_rpm(), bar_format="RPM | {bar}{n_fmt} - {total_fmt}")
         self.gear_bar = tqdm(total=self.car.transmission.gear_length(), bar_format="Gear {n_fmt} of {total_fmt}")

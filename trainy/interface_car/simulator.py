@@ -42,6 +42,10 @@ class Simulator(ABC):
 
         return default_ctrl
 
+    def print_ctrl(self):
+        for key, value in self.get_ctrl_key().items():
+            print(key, value.__name__)
+
     def drive(self):
         # os.system('clear')
         old_settings = termios.tcgetattr(sys.stdin)

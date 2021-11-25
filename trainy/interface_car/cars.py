@@ -26,6 +26,9 @@ class Car(ABC):
     def speed_down(self, acsel):
         pass
 
+    def __str__(self):
+        return f'{self.name} | Engine: {self.engine.get_max_rpm()} | Transmission: {self.transmission.name}'
+
 
 class CarMT(Car):
     transmission: MT
@@ -70,7 +73,7 @@ class CarAT(CarMT):
         self.default_shift_height = default_shift_height
         self.default_shift_low = default_shift_low
 
-    def __requirements_for_up_shift(self, rpm):
+    def requirements_for_up_shift(self, rpm):
         if rpm < self.default_shift_height:
             return False
         elif self.transmission.get_gear() == self.transmission.gear_length():
@@ -88,11 +91,11 @@ class CarAT(CarMT):
                 new_rpm -= self.cutoff
                 self.engine.set_rpm(new_rpm)
 
-            if self.__requirements_for_up_shift(new_rpm):
+            if self.requirements_for_up_shift(new_rpm):
                 self.transmission.up_set_gear()
                 self.engine.set_rpm(new_rpm - self.rpm_for_up)
 
-    def __requirements_for_down_shift(self, rpm):
+    def requirements_for_down_shift(self, rpm):
         if rpm > self.default_shift_low:
             return False
         elif self.transmission.get_gear() == 1:
@@ -109,7 +112,7 @@ class CarAT(CarMT):
             else:
                 self.engine.set_rpm(0)
 
-            if self.__requirements_for_down_shift(new_rpm):
+            if self.requirements_for_down_shift(new_rpm):
                 self.transmission.down_set_gear()
                 self.engine.set_rpm(new_rpm + self.rpm_for_down)
 
