@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from abc import ABC, abstractmethod
-
 from cars import CarMT, CarAT, Car
-from simulator import SimulatorMT, SimulatorAT, Simulator
 from engines import Engine
-from transmissions import MT, AT, GearBox
+from simulator import SimulatorMT, SimulatorAT, Simulator
+from transmissions import MT, AT
 from display import DisplayMT, DisplayAT, bcolors, Display
 
 '''
@@ -41,17 +39,17 @@ from display import DisplayMT, DisplayAT, bcolors, Display
 
 '''
 
-mt1 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MT ZF 1')
-mt2 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MT ZF 2')
-mt3 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MT ZF 3')
-mt4 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MT ZF 4')
-mt5 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MT ZF 5')
+mt1 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MTZF1')
+mt2 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MTZF2')
+mt3 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MTZF3')
+mt4 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MTZF4')
+mt5 = MT([4.23, 2.53, 1.67, 1.23, 1, 0.83], 'MTZF5')
 
-at1 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'AT FE 1')
-at2 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'AT FE 2')
-at3 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'AT FE 3')
-at4 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'AT FE 4')
-at5 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'AT FE 5')
+at1 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE1')
+at2 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE2')
+at3 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE3')
+at4 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE4')
+at5 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE5')
 
 engine1 = Engine(5500)
 engine2 = Engine(6500)
@@ -84,231 +82,45 @@ cars_dict = {
     "10": toyota,
 }
 
-# ========= Work with CAR =========
-
-
-class CarBuilder(ABC):
-    @abstractmethod
-    def set_engine(self, engine: Engine):
-        pass
-
-    @abstractmethod
-    def set_transmission(self, transmission: GearBox):
-        pass
-
-    @abstractmethod
-    def set_name(self, name: str):
-        pass
-
-    @abstractmethod
-    def build(self):
-        pass
-
-
-class CarMTBuilder(CarBuilder):
-
-    def set_engine(self, engine: Engine):
-        self.engine = engine
-        return self
-
-    def set_transmission(self, transmission: MT):
-        self.transmission = transmission
-        return self
-
-    def set_name(self, name: str):
-        self.name = name
-        return self
-
-    def build(self) -> CarMT:
-        return CarMT(self.engine, self.transmission, self.name)
-
-
-class CarATBuilder(CarBuilder):
-
-    def set_engine(self, engine: Engine):
-        self.engine = engine
-        return self
-
-    def set_transmission(self, transmission: AT):
-        self.transmission = transmission
-        return self
-
-    def set_name(self, name: str):
-        self.name = name
-        return self
-
-    def build(self) -> CarAT:
-        return CarAT(self.engine, self.transmission, self.name)
-
-
-class CarFactory(ABC):
-    @abstractmethod
-    def get_car(self, engine, transmission, name) -> Car:
-        pass
-
-
-class CarMTFactory(CarFactory):
-    def get_car(self, engine, transmission, name) -> CarMT:
-        return CarMTBuilder().set_engine(engine).set_transmission(transmission).set_name(name).build()
-
-
-class CarATFactory(CarFactory):
-    def get_car(self, engine, transmission, name) -> CarAT:
-        return CarATBuilder().set_engine(engine).set_transmission(transmission).set_name(name).build()
-
-
-# ========= Work with SIMULATOR =========
-
-
-class SimulatorBuilder(ABC):
-
-    @abstractmethod
-    def set_car(self, car: Car):
-        pass
-
-    @abstractmethod
-    def set_display(self, display):
-        pass
-
-    @abstractmethod
-    def build(self) -> Simulator:
-        pass
-
-
-class SimulatorMTBuilder(SimulatorBuilder):
-
-    def set_car(self, car: CarMT):
-        self.car = car
-        return self
-
-    def set_display(self, display):
-        self.display = display
-        return self
-
-    def build(self) -> SimulatorMT:
-        return SimulatorMT(self.car, self.display)
-
-
-class SimulatorATBuilder(SimulatorBuilder):
-
-    def set_car(self, car: CarAT):
-        self.car = car
-        return self
-
-    def set_display(self, display):
-        self.display = display
-        return self
-
-    def build(self) -> SimulatorAT:
-        return SimulatorAT(self.car, self.display)
-
-
-class SimulatorFactory(ABC):
-    @abstractmethod
-    def get_simulator(self, car: Car, display: Display) -> Simulator:
-        pass
-
-
-class SimulatorMTFactory(SimulatorFactory):
-    def get_simulator(self, car: CarMT, display: DisplayMT) -> SimulatorMT:
-        return SimulatorMTBuilder().set_car(car).set_display(display).build()
-
-
-class SimulatorATFactory(SimulatorFactory):
-    def get_simulator(self, car: CarAT, display: DisplayAT) -> SimulatorAT:
-        return SimulatorATBuilder().set_car(car).set_display(display).build()
-
-
-# ========= Work with DISPLAY =========
-
-
-class DisplayBuilder(ABC):
-    @abstractmethod
-    def set_car(self, car: Car):
-        pass
-
-    @abstractmethod
-    def build(self):
-        pass
-
-
-class DisplayMTBuilder(DisplayBuilder):
-    def set_car(self, car: CarMT):
-        self.car = car
-        return self
-
-    def build(self) -> DisplayMT:
-        return DisplayMT(self.car)
-
-
-class DisplayATBuilder(DisplayBuilder):
-    def set_car(self, car: CarAT):
-        self.car = car
-        return self
-
-    def build(self) -> DisplayAT:
-        return DisplayAT(self.car)
-
-
-class DisplayFactory(ABC):
-    @abstractmethod
-    def get_display(self, car: Car) -> Display:
-        pass
-
-
-class DisplayMTFactory(DisplayFactory):
-    def get_display(self, car: CarMT) -> DisplayMT:
-        return DisplayMTBuilder().set_car(car).build()
-
-
-class DisplayATFactory(DisplayFactory):
-    def get_display(self, car: CarAT) -> DisplayAT:
-        return DisplayATBuilder().set_car(car).build()
-
-
-def client(simulator: Simulator):
-    simulator.print_ctrl()
-    simulator.drive()
+'''
+Соглашение при создании машины.
+    У нас есть соглашение абривиатуры автомобиля.
+    bmw_{MAX-RPM-ENGINE}_{NAME-TRANSMISSION}
+    bmw_7500_zf5hp24
+    
+    Ета абривиатура для того чтобы мы могливыдать свои автомобили.
+
+
+Если мы создаем новую машину.
+    Нам нужно передать пихло трансмиссию и модель машины
+
+'''
 
 
 if __name__ == "__main__":
+    print('\n')
+    welcome_message = bcolors.HEADER + '\U0001F308 \U0001F917 Welcome in owers  RCC (Rent Car Centers) \U0001F917 \U0001F308' + bcolors.ENDC
+    print(welcome_message.center(120) + '\n')
 
-    car = CarMTFactory().get_car(engine1, mt1, 'Xyiita')
-    display = DisplayMTFactory().get_display(car)
-    simulator = SimulatorMTFactory().get_simulator(car, display)
+    for k, v in cars_dict.items():
+        print(f'{bcolors.UNDERLINE}{k}{bcolors.ENDC} \U0001F698 {v}')
 
-    client(simulator)
+    print('\n')
 
+    choise = input(bcolors.UNDERLINE + 'Choise Car For Rent ->> # ' + bcolors.ENDC)
+    car = cars_dict.get(choise)
 
+    print(f'Yours choise \U0001F449 {car}. \U0001F91F')
 
+    if type(car.transmission) == MT:
+        display = DisplayMT(car)
+        simulator = SimulatorMT(car, display)
+        print(simulator.get_ctrl_key())
+        simulator.drive()
 
-
-
-
-
-    # print('\n')
-    # welcome_message = bcolors.HEADER + '\U0001F308 \U0001F917 Welcome in owers  RCC (Rent Car Centers) \U0001F917 \U0001F308' + bcolors.ENDC
-    # print(welcome_message.center(120) + '\n')
-    #
-    # for k, v in cars_dict.items():
-    #     print(f'{bcolors.UNDERLINE}{k}{bcolors.ENDC} \U0001F698 {v}')
-    #
-    # print('\n')
-    #
-    # choise = input(bcolors.UNDERLINE + 'Choise Car For Rent ->> # ' + bcolors.ENDC)
-    # car = cars_dict.get(choise)
-    #
-    # print(f'Yours choise \U0001F449 {car}. \U0001F91F')
-    #
-    # if type(car.transmission) == MT:
-    #     display = DisplayForMyCar(car)
-    #     simulator = SimulatorMT(car, display)
-    #     print_ctrl(simulator.get_ctrl_key())
-    #     simulator.drive()
-    #
-    # elif type(car.transmission) == AT:
-    #     display = DisplayForMyCarAT(car)
-    #     simulator = SimulatorAT(car, display)
-    #     print_ctrl(simulator.get_ctrl_key())
-    #     simulator.drive()
+    elif type(car.transmission) == AT:
+        display = DisplayAT(car)
+        simulator = SimulatorAT(car, display)
+        print(simulator.get_ctrl_key())
+        simulator.drive()
 #
