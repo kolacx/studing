@@ -62,10 +62,10 @@ class CarMT(Car):
 class CarAT(CarMT):
     transmission: AT
 
-    def __init__(self, car, display, name, cutoff=500, engine_idle=750, rpm_for_down=1000, rpm_for_up=1000,
+    def __init__(self, engine, transmission, name, rpm_for_down=1000, rpm_for_up=1000,
                  default_shift_height=3000, default_shift_low=1000):
 
-        super().__init__(car, display, name, cutoff, engine_idle)
+        super().__init__(engine, transmission, name)
         self.mode = ATGearboxModes.parking
 
         self.rpm_for_down = rpm_for_down

@@ -1,4 +1,3 @@
-
 '''
 Пусть каждая фабрика
 
@@ -19,20 +18,10 @@
 
 Фабрике выдать досутп на создание машины.
 '''
-from cars import Car, CarMT, CarAT
+
+from factorys import BmwATFactory, BmwMTFactory
 from loaders import LoadFromCSV
-from display import DisplayMT
-from factorys import Manual, Authomatic
-from simulator import Simulator
 from transmissions import MT
-
-
-def build_simulator(car: [CarMT, CarAT]) -> Simulator:
-    fabric = Manual() if isinstance(car.transmission, MT) else Authomatic()
-
-    display = fabric.create_display(car)
-    simulator = fabric.create_simulator(car, display)
-    return simulator
 
 
 class LO(LoadFromCSV):
@@ -48,5 +37,8 @@ if __name__ == "__main__":
 
     car = loader.get_car_by_code('bmw1_1111_zf1')
 
-    simulator = build_simulator(car)
+    factory = BmwMTFactory() if isinstance(car.transmission, MT) else BmwATFactory()
+
+    display = factory.create_display(car)
+    simulator = factory.create_simulator(car, display)
     simulator.drive()

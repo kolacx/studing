@@ -1,94 +1,63 @@
 from abc import ABC, abstractmethod
 
-from builders import TransmissionMTBuilder, TransmissionATBuilder, CarMTBuilder, CarATBuilder, SimulatorMTBuilder, \
-    SimulatorATBuilder, DisplayMTBuilder, DisplayATBuilder, EngineBuilder
 from cars import Car, CarMT, CarAT
 from display import Display, DisplayMT, DisplayAT
+from engines import Engine
 from simulator import Simulator, SimulatorMT, SimulatorAT
+from transmissions import GearBox, AT, MT
 
 
-# ========= Work with TRANSMISSION =========
-
-
-class TransmissionFactory(ABC):
+class AbcFactory(ABC):
     @abstractmethod
-    def create_transmission(self, ratio_list: list, name: str):
+    def create_engine(self, max_rpm: int) -> Engine:
         pass
 
-
-class TransmissionMTFactory(TransmissionFactory):
-    def create_transmission(self, ratio_list: list, name: str):
-        return TransmissionMTBuilder().set_ratio_list(ratio_list).set_name(name).build()
-
-
-class TransmissionATFactory(TransmissionFactory):
-    def create_transmission(self, ratio_list: list, name: str):
-        return TransmissionATBuilder().set_ratio_list(ratio_list).set_name(name).build()
-
-
-# ========= Work with CAR =========
-
-
-class CarFactory(ABC):
     @abstractmethod
-    def create_car(self, engine, transmission, name) -> Car:
+    def create_transmission(self, ratio_list: list, name: str) -> GearBox:
         pass
 
+    @abstractmethod
+    def create_car(self, engine: Engine, transmission: GearBox, name: str) -> Car:
+        pass
 
-class CarMTFactory(CarFactory):
-    def create_car(self, engine, transmission, name) -> CarMT:
-        return CarMTBuilder().set_engine(engine).set_transmission(transmission).set_name(name).build()
+    @abstractmethod
+    def create_display(self, car: Car) -> Display:
+        pass
 
-
-class CarATFactory(CarFactory):
-    def create_car(self, engine, transmission, name) -> CarAT:
-        return CarATBuilder().set_engine(engine).set_transmission(transmission).set_name(name).build()
-
-
-# ========= Work with SIMULATOR =========
-
-
-class SimulatorFactory(ABC):
     @abstractmethod
     def create_simulator(self, car: Car, display: Display) -> Simulator:
         pass
 
 
-class SimulatorMTFactory(SimulatorFactory):
-    def create_simulator(self, car: CarMT, display: DisplayMT) -> SimulatorMT:
-        return SimulatorMTBuilder().set_car(car).set_display(display).build()
+class BmwATFactory(AbcFactory):
+    def create_engine(self, max_rpm: int) -> Engine:
+        return Engine(max_rpm)
 
+    def create_transmission(self, ratio_list: list, name: str) -> AT:
+        return AT(ratio_list, name)
 
-class SimulatorATFactory(SimulatorFactory):
-    def create_simulator(self, car: CarAT, display: DisplayAT) -> SimulatorAT:
-        return SimulatorATBuilder().set_car(car).set_display(display).build()
+    def create_car(self, engine: Engine, transmission: AT, name: str) -> CarAT:
+        return CarAT(engine, transmission, name)
 
-
-# ========= Work with DISPLAY =========
-
-
-class DisplayFactory(ABC):
-    @abstractmethod
-    def create_display(self, car: Car) -> Display:
-        pass
-
-
-class DisplayMTFactory(DisplayFactory):
-    def create_display(self, car: CarMT) -> DisplayMT:
-        return DisplayMTBuilder().set_car(car).build()
-
-
-class DisplayATFactory(DisplayFactory):
     def create_display(self, car: CarAT) -> DisplayAT:
-        return DisplayATBuilder().set_car(car).build()
+        return DisplayAT(car)
+
+    def create_simulator(self, car: CarAT, display: DisplayAT) -> SimulatorAT:
+        return SimulatorAT(car, display)
 
 
-# =========== Use this ? =================
+class BmwMTFactory(AbcFactory):
+    def create_engine(self, max_rpm: int) -> Engine:
+        return Engine(max_rpm)
 
+    def create_transmission(self, ratio_list: list, name: str) -> MT:
+        return MT(ratio_list, name)
 
-class Manual(TransmissionMTFactory, CarMTFactory, SimulatorMTFactory, DisplayMTFactory):
-    pass
+    def create_car(self, engine: Engine, transmission: MT, name: str) -> CarMT:
+        return CarMT(engine, transmission, name)
 
+    def create_display(self, car: CarMT) -> DisplayMT:
+        return DisplayMT(car)
 
-class Authomatic(TransmissionATFactory, CarATFactory, SimulatorATFactory, DisplayATFactory):
-    pass
+    def create_simulator(self, car: CarMT, display: DisplayMT) -> SimulatorMT:
+        return SimulatorMT(car, display)

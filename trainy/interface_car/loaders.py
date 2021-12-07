@@ -1,14 +1,9 @@
 from abc import ABC, abstractmethod
 
-from factorys import CarMTFactory, TransmissionMTFactory, Manual, Authomatic
-from builders import EngineBuilder
+from factorys import BmwMTFactory, BmwATFactory, AbcFactory
 
 
 class Loader(ABC):
-    def __init__(self, pwd_file):
-        self.pwd_file = pwd_file
-        self.db = {}
-
     @abstractmethod
     def load(self):
         pass
@@ -17,22 +12,23 @@ class Loader(ABC):
     def _save_db(self, data):
         pass
 
-    def build_car(self, f: [Manual, Authomatic], engine_rpm, transmission_ratio_list, transmission_name, car_name):
-        engine = EngineBuilder().set_max_rpm(engine_rpm).build()
-        transmission = f.create_transmission(transmission_ratio_list, transmission_name)
-        car = f.create_car(engine, transmission, car_name)
-
-        return car
+    # def build_car(self, f: AbcFactory, engine_rpm, t_ratio_list, t_name, car_name):
+    #     engine = f.create_engine(engine_rpm)
+    #     transmission = f.create_transmission(t_ratio_list, t_name)
+    #     car = f.create_car(engine, transmission, car_name)
+    #
+    #     return car
 
 
 class LoadFromCSV(Loader):
     def __init__(self, pwd_file, spliter: str):
-        super().__init__(pwd_file)
+        self.pwd_file = pwd_file
+        self.db = {}
         self.spliter = spliter
 
     def print_db(self):
         for k, v in self.db.items():
-            print(k, '\U0001F90C ', v)
+            print(k, '\U0001F90C ', type(v.transmission))
 
     def _save_db(self, data):
         self.db.update(data)
@@ -46,15 +42,19 @@ class LoadFromCSV(Loader):
 
                 car_name = data[0]
                 engine_rpm = int(data[1])
-                transmission_ratio_list = [data[2]]
-                transmission_name = data[3]
-                transmission_type = data[4]
+                t_ratio_list = [float(i) for i in data[2].split(',')]
+                t_name = data[3]
+                t_type = data[4]
 
-                type = Manual() if transmission_type == 'mt' else Authomatic()
+                factory = BmwMTFactory() if t_type == 'mt' else BmwATFactory()
 
-                car = self.build_car(type, engine_rpm, transmission_ratio_list, transmission_name, car_name)
+                engine = factory.create_engine(engine_rpm)
+                transmission = factory.create_transmission(t_ratio_list, t_name)
+                car = factory.create_car(engine, transmission, car_name)
 
-                code = f"{car_name}_{engine_rpm}_{transmission_name}"
+                # car = self.build_car(factory, engine_rpm, t_ratio_list, t_name, car_name)
+
+                code = f"{car_name}_{engine_rpm}_{t_name}"
 
                 temp.update({code: car})
 
