@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from builders import TransmissionMTBuilder, TransmissionATBuilder, CarMTBuilder, CarATBuilder, SimulatorMTBuilder, \
-    SimulatorATBuilder, DisplayMTBuilder, DisplayATBuilder
+    SimulatorATBuilder, DisplayMTBuilder, DisplayATBuilder, EngineBuilder
 from cars import Car, CarMT, CarAT
 from display import Display, DisplayMT, DisplayAT
 from simulator import Simulator, SimulatorMT, SimulatorAT
@@ -82,3 +82,13 @@ class DisplayATFactory(DisplayFactory):
     def create_display(self, car: CarAT) -> DisplayAT:
         return DisplayATBuilder().set_car(car).build()
 
+
+# =========== Use this ? =================
+
+
+class Manual(TransmissionMTFactory, CarMTFactory, SimulatorMTFactory, DisplayMTFactory):
+    pass
+
+
+class Authomatic(TransmissionATFactory, CarATFactory, SimulatorATFactory, DisplayATFactory):
+    pass

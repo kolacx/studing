@@ -1,26 +1,6 @@
 
 '''
-Как я хочу чтобы моим приложением пользовались.
-
-Я хочу чтобы была единая точка доступа. например Game().
-Ну и метод какойто play() который всетаки будет стартовать.
-
-Для того чтобы оно работало мне нужно задать дефолт с чем работать будет моя программа.
-Дефолтом является машина.
-
-Без машины мы ничего не сделаем.
-
-Мы можем конструировать вне игры и передавать сразу Машину. Либо мы можем предусмотреть какойто функционал для создания
-всех деталей в нутри нашей игры.
-
-Нужно понять плюсы и минусы. Каждого подхода.
-
-
-
-
-
-
-Пусть каждая фабрика 
+Пусть каждая фабрика
 
 
 Очертить сначало задачи которые я хочу решить. Относительно машины.
@@ -39,3 +19,34 @@
 
 Фабрике выдать досутп на создание машины.
 '''
+from cars import Car, CarMT, CarAT
+from loaders import LoadFromCSV
+from display import DisplayMT
+from factorys import Manual, Authomatic
+from simulator import Simulator
+from transmissions import MT
+
+
+def build_simulator(car: [CarMT, CarAT]) -> Simulator:
+    fabric = Manual() if isinstance(car.transmission, MT) else Authomatic()
+
+    display = fabric.create_display(car)
+    simulator = fabric.create_simulator(car, display)
+    return simulator
+
+
+class LO(LoadFromCSV):
+    def get_car_by_code(self, code):
+        return self.db.get(code)
+
+
+if __name__ == "__main__":
+    print('Game')
+
+    loader = LO('cars.csv', ';')
+    loader.load()
+
+    car = loader.get_car_by_code('bmw1_1111_zf1')
+
+    simulator = build_simulator(car)
+    simulator.drive()

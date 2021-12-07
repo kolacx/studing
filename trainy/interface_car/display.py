@@ -53,7 +53,6 @@ class DisplayMT(Display):
 
     def show(self):
         self.rpm_bar.n = self.car.engine.get_rpm()
-        # self.rpm_bar.colour = 'RED' if self.car.status == CarStatus.info_rpm_cutoff else 'WHITE'
         self.gear_bar.n = self.car.transmission.get_gear()
 
         self.ref()
