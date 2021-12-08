@@ -5,8 +5,8 @@ from enums import CarStatus, ATGearboxModes
 
 
 class Car(ABC):
-    def __init__(self, engine: Engine, transmission: GearBox, name):
-        self.name = name
+    def __init__(self, engine: Engine, transmission: GearBox, model):
+        self.model = model
         self.engine = engine
         self.transmission = transmission
 
@@ -27,7 +27,7 @@ class Car(ABC):
         pass
 
     def __str__(self):
-        return f'{self.name} | Engine: {self.engine.get_max_rpm()} | Transmission: {self.transmission.name}'
+        return f'{self.model} | Engine: {self.engine.get_max_rpm()} | Transmission: {self.transmission.name}'
 
 
 class CarMT(Car):

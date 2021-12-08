@@ -18,9 +18,10 @@
 
 Фабрике выдать досутп на создание машины.
 '''
-
-from factorys import BmwATFactory, BmwMTFactory
+from display import DisplayMT, DisplayAT
+from factorys import CarATCarFactory, CarMTCarFactory
 from loaders import LoadFromCSV
+from simulator import SimulatorMT, SimulatorAT
 from transmissions import MT
 
 
@@ -32,13 +33,13 @@ class LO(LoadFromCSV):
 if __name__ == "__main__":
     print('Game')
 
-    loader = LO('cars.csv', ';')
+    loader = LO('load_cars.csv', ';')
     loader.load()
 
-    car = loader.get_car_by_code('bmw1_1111_zf1')
+    car = loader.get_car_by_code('bmw1_1111_zf1_mt')
+    display = DisplayMT(car)
+    simulator = SimulatorMT(car, display)
 
-    factory = BmwMTFactory() if isinstance(car.transmission, MT) else BmwATFactory()
-
-    display = factory.create_display(car)
-    simulator = factory.create_simulator(car, display)
     simulator.drive()
+
+

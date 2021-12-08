@@ -1,7 +1,7 @@
 
 
 class Engine:
-    def __init__(self, max_rpm, idle=750):
+    def __init__(self, max_rpm, idle):
         self._rpm = 0
         self._max_rpm = max_rpm
         self._idle = idle

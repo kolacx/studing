@@ -1,0 +1,38 @@
+[
+    {
+        "code": "me_7500_5tka_mt",
+        "car_model": "Mitcsubishi Evolution",
+        "engine_max_rpm": 7500,
+        "engine_idle": 1000,
+        "transmission_ratio_list": [ 4.23, 2.53, 1.67, 1.23, 1, 0.83 ],
+        "transmission_model": "5tka",
+        "transmission_type": "mt"
+    },
+    {
+        "code": "m5_8500_zf8hp18_at",
+        "car_model": "BMW M5",
+        "engine_max_rpm": 8500,
+        "engine_idle": 700,
+        "transmission_ratio_list": [ 4.23,2.53,1.67,1.23,1,0.83, 0.75, 0.5 ],
+        "transmission_model": "zf8hp18",
+        "transmission_type": "at"
+    },
+    {
+        "code": "mamg_6500_NAG2_at",
+        "car_model": "Mercedese AMG",
+        "engine_max_rpm": 6500,
+        "engine_idle": 800,
+        "transmission_ratio_list": [ 4.23,2.53,1.67,1.23,1,0.83, 0.77, 0.55, 0.34 ],
+        "transmission_model": "NAG2",
+        "transmission_type": "at"
+    },
+    {
+        "code": "swsti_8000_TY856WB1CA_mt",
+        "car_model": "Subaru WRX STI",
+        "engine_max_rpm": 8000,
+        "engine_idle": 900,
+        "transmission_ratio_list": [ 4.23,2.53,1.67,1.23,1,0.83 ],
+        "transmission_model": "TY856WB1CA",
+        "transmission_type": "mt"
+    }
+]

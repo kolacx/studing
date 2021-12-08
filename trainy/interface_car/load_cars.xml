@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <element>
+        <car_model>McLaren Speedtail</car_model>
+        <code>ms_9500_graziano_mt</code>
+        <engine_idle>1200</engine_idle>
+        <engine_max_rpm>9500</engine_max_rpm>
+        <transmission_model>graziano</transmission_model>
+        <transmission_ratio_list>
+            <element>4.23</element>
+            <element>2.53</element>
+            <element>1.67</element>
+            <element>1.23</element>
+            <element>1</element>
+            <element>0.83</element>
+        </transmission_ratio_list>
+        <transmission_type>mt</transmission_type>
+    </element>
+    <element>
+        <car_model>Pininfarina Battista</car_model>
+        <code>pb_10000_874-HPEV_mt</code>
+        <engine_idle>1200</engine_idle>
+        <engine_max_rpm>10000</engine_max_rpm>
+        <transmission_model>874-HP EV</transmission_model>
+        <transmission_ratio_list>
+            <element>4.23</element>
+            <element>2.53</element>
+            <element>1.67</element>
+            <element>1.23</element>
+            <element>1</element>
+            <element>0.83</element>
+            <element>0.75</element>
+            <element>0.5</element>
+        </transmission_ratio_list>
+        <transmission_type>mt</transmission_type>
+    </element>
+    <element>
+        <car_model>Koenigsegg Jesko</car_model>
+        <code>kj_12000_jesko-gearbox_at</code>
+        <engine_idle>1000</engine_idle>
+        <engine_max_rpm>12000</engine_max_rpm>
+        <transmission_model>Jesko gearbox</transmission_model>
+        <transmission_ratio_list>
+            <element>4.23</element>
+            <element>2.53</element>
+            <element>1.67</element>
+            <element>1.23</element>
+            <element>1</element>
+            <element>0.83</element>
+            <element>0.77</element>
+            <element>0.55</element>
+            <element>0.34</element>
+        </transmission_ratio_list>
+        <transmission_type>at</transmission_type>
+    </element>
+    <element>
+        <car_model>Aston Martin Valkyrie</car_model>
+        <code>amv_8000_Ricardo_at</code>
+        <engine_idle>900</engine_idle>
+        <engine_max_rpm>8000</engine_max_rpm>
+        <transmission_model>Ricardo</transmission_model>
+        <transmission_ratio_list>
+            <element>4.23</element>
+            <element>2.53</element>
+            <element>1.67</element>
+            <element>1.23</element>
+            <element>1</element>
+            <element>0.83</element>
+            <element>0.6</element>
+        </transmission_ratio_list>
+        <transmission_type>at</transmission_type>
+    </element>
+</root>
