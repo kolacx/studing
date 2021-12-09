@@ -6,11 +6,37 @@ import xml.etree.ElementTree as ET
 from factorys import CarMTCarFactory, CarATCarFactory, AbcCarFactory
 
 
-class Loader(ABC):
-    DB = {}
+class DB(ABC):
+    def __init__(self):
+        self._data = {}
 
-    def __init__(self, pwd_file, spliter: str = None):
+    @abstractmethod
+    def insert(self, data):
+        pass
+
+    @abstractmethod
+    def select(self, key):
+        pass
+
+    def print_db(self):
+        for k, v in self._data.items():
+            print('\U0001F90C ', k, v)
+
+
+class MyDB(DB):
+
+    def insert(self, data):
+        self._data.update(data)
+
+    def select(self, key):
+        self._data.get(key)
+
+
+class Loader(ABC):
+
+    def __init__(self, pwd_file, db: DB, spliter: str = None):
         self.pwd_file = pwd_file
+        self.db = db
 
         self.spliter = spliter if spliter is not None else ';'
         self.factory = {
@@ -18,20 +44,11 @@ class Loader(ABC):
             "at": CarATCarFactory(),
         }
 
-    @classmethod
-    def _save_db(cls, data):
-        cls.DB.update(data)
-
     @abstractmethod
     def load(self):
         pass
 
-    @classmethod
-    def print_db(cls):
-        for k, v in cls.DB.items():
-            print('\U0001F90C ', k, v)
-
-    def _construct_car(self, t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name):
+    def construct_car(self, t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name):
         factory = self.factory.get(t_type)
 
         engine = factory.create_engine(engine_rpm, engine_idle)
@@ -56,11 +73,11 @@ class LoadFromCSV(Loader):
                 t_name = data[5]
                 t_type = data[6]
 
-                car = self._construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
+                car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
                 temp.update({code: car})
 
-        self._save_db(temp)
+        self.db.insert(temp)
 
 
 class LoadFromJSON(Loader):
@@ -77,11 +94,11 @@ class LoadFromJSON(Loader):
                 t_name = e.get("transmission_model")
                 t_type = e.get("transmission_type")
 
-                car = self._construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
+                car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
                 temp.update({code: car})
 
-        self._save_db(temp)
+        self.db.insert(temp)
 
 
 class LoadFromXML(Loader):
@@ -98,11 +115,11 @@ class LoadFromXML(Loader):
             t_name = i.find("transmission_model").text
             t_type = i.find("transmission_type").text
 
-            car = self._construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
+            car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
             temp.update({code: car})
 
-        self._save_db(temp)
+        self.db.insert(temp)
 
 
 class LoadFromYAML(Loader):
@@ -121,23 +138,25 @@ class LoadFromYAML(Loader):
                 t_name = i.get("transmission_model")
                 t_type = i.get("transmission_type")
 
-                car = self._construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
+                car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
                 temp.update({code: car})
 
-            self._save_db(temp)
+            self.db.insert(temp)
 
 
 if __name__ == "__main__":
 
-    _csv = LoadFromCSV('load_cars.csv', spliter=";")
-    _json = LoadFromJSON('load_cars.json')
-    _xml = LoadFromXML('load_cars.xml')
-    _yaml = LoadFromYAML('load_cars.yaml')
+    db = MyDB()
+
+    _csv = LoadFromCSV('load_cars.csv', db, spliter=";")
+    _json = LoadFromJSON('load_cars.json', db)
+    _xml = LoadFromXML('load_cars.xml', db)
+    _yaml = LoadFromYAML('load_cars.yaml', db)
 
     _csv.load()
     _json.load()
     _xml.load()
     _yaml.load()
 
-    Loader.print_db()
+    db.print_db()
