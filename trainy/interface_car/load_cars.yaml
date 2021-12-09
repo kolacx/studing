@@ -1,0 +1,59 @@
+-
+  code: hc_8000_bb7a_at
+  car_model: Honda Civic
+  engine_max_rpm: 8000
+  engine_idle: 700
+  transmission_ratio_list:
+    - 4.23
+    - 2.53
+    - 1.67
+    - 1.23
+    - 1
+    - 0.83
+  transmission_model: BB7A
+  transmission_type: at
+
+-
+  code: tc_6500_u250e_at
+  car_model: Toyota Camry
+  engine_max_rpm: 6500
+  engine_idle: 800
+  transmission_ratio_list:
+    - 4.23
+    - 2.53
+    - 1.67
+    - 1.23
+    - 1
+  transmission_model: U250E
+  transmission_type: at
+
+-
+  code: m_6500_a26mx-r_mt
+  car_model: Mazda 6
+  engine_max_rpm: 6500
+  engine_idle: 7000
+  transmission_ratio_list:
+    - 4.23
+    - 2.53
+    - 1.67
+    - 1.23
+    - 1
+  transmission_model: A26MX-R
+  transmission_type: at
+
+-
+  code: ks_6500_A8LR1/A8TR1_mt
+  car_model: Kia Stinger
+  engine_max_rpm: 6500
+  engine_idle: 700
+  transmission_ratio_list:
+    - 4.23
+    - 2.53
+    - 1.67
+    - 1.23
+    - 1
+    - 0.83
+    - 0.70
+    - 0.50
+  transmission_model: A8LR1/A8TR1
+  transmission_type: at

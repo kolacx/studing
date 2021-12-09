@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import json
+import yaml
 import xml.etree.ElementTree as ET
 
 from factorys import CarMTCarFactory, CarATCarFactory, AbcCarFactory
@@ -28,7 +29,7 @@ class Loader(ABC):
     @classmethod
     def print_db(cls):
         for k, v in cls.DB.items():
-            print(k, '\U0001F90C ', v)
+            print('\U0001F90C ', k, v)
 
     def _construct_car(self, t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name):
         factory = self.factory.get(t_type)
@@ -104,14 +105,39 @@ class LoadFromXML(Loader):
         self._save_db(temp)
 
 
+class LoadFromYAML(Loader):
+
+    def load(self):
+        temp = {}
+
+        with open(self.pwd_file, 'r') as f:
+            file = yaml.safe_load(f)
+            for i in file:
+                code = i.get('code')
+                car_name = i.get("car_model")
+                engine_rpm = i.get("engine_max_rpm")
+                engine_idle = i.get("engine_idle")
+                t_ratio_list = i.get("transmission_ratio_list")
+                t_name = i.get("transmission_model")
+                t_type = i.get("transmission_type")
+
+                car = self._construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
+
+                temp.update({code: car})
+
+            self._save_db(temp)
+
+
 if __name__ == "__main__":
 
     _csv = LoadFromCSV('load_cars.csv', spliter=";")
     _json = LoadFromJSON('load_cars.json')
     _xml = LoadFromXML('load_cars.xml')
+    _yaml = LoadFromYAML('load_cars.yaml')
 
     _csv.load()
     _json.load()
     _xml.load()
+    _yaml.load()
 
     Loader.print_db()
