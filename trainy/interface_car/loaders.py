@@ -15,19 +15,10 @@ def print_db():
         print('\U0001F90C ', k, v)
 
 
-class InterfaceLoader(ABC):
-    @abstractmethod
-    def load(self):
-        pass
+class Loader(ABC):
 
-
-class Loader(InterfaceLoader):
-
-    def __init__(self, pwd_file, spliter: str = None):
-        self.pwd_file = pwd_file
+    def __init__(self):
         self.db = {}
-
-        self.spliter = spliter if spliter is not None else ';'
         self.factory = {
             "mt": CarMTCarFactory(),
             "at": CarATCarFactory(),
@@ -46,68 +37,21 @@ class Loader(InterfaceLoader):
         return factory.create_car(engine, transmission, car_name)
 
 
-class ProxyLoader(InterfaceLoader):
+class FileLoader(Loader):
 
-    def __init__(self, daddies: List[Loader]):
-        self.daddies = daddies
-        self.catalog = {}
-
-    def load(self):
-        for daddy in self.daddies:
-            self.catalog.update(daddy.load())
-
-        self.save() # ?
-
-    def load2(self):
-        for daddy in self.daddies:
-            self.catalog.update(daddy.load())
-
-        return self.catalog # ?
-
-    # === ??? ====
-    def save(self):
-        OUTSIDE_DB.update(self.catalog)
-    # === ??? ====
-
-
-class ProxyLoader2(InterfaceLoader):
-
-    def __init__(self, file_list: list):
-        self.file_dict: dict = self.get_type_file_dict(file_list)
-        self.daddies = {
-            'csv': LoadFromCSV,
-            'json': LoadFromJSON,
-            'xml': LoadFromXML,
-            'yaml': LoadFromYAML
-        }
-        self.catalog = {}
+    def __init__(self, pwd_file):
+        super().__init__()
+        self.pwd_file = pwd_file
 
     def load(self):
-        for type_file, file_path in self.file_dict.items():
-            loader = self.daddies.get(type_file)
-            self.catalog.update(loader(file_path).load())
-
-        self.save() # ?
-        return self.catalog # ?
-
-    # === ??? ====
-    def save(self):
-        OUTSIDE_DB.update(self.catalog)
-    # === ??? ====
-
-    def get_type_file_dict(self, file_list):
-        file_dict = {}
-
-        for file_path in file_list:
-            type_file = file_path.split('.')[1]
-            file_dict.update({
-                type_file: file_path
-            })
-
-        return file_dict
+        NotImplementedError('Need Implements')
 
 
-class LoadFromCSV(Loader):
+class LoadFromCSV(FileLoader):
+
+    def __init__(self, pwd_file, spliter):
+        super().__init__(pwd_file)
+        self.spliter = spliter if spliter is not None else ';'
 
     def load(self):
         with open(self.pwd_file, 'r') as f:
@@ -126,11 +70,10 @@ class LoadFromCSV(Loader):
 
                 self.db.update({code: car})
 
-        # self.db.update(self.db)
         return self.db
 
 
-class LoadFromJSON(Loader):
+class LoadFromJSON(FileLoader):
 
     def load(self):
         with open(self.pwd_file) as file:
@@ -148,11 +91,11 @@ class LoadFromJSON(Loader):
 
                 self.db.update({code: car})
 
-        # self.db.update(self.db)
         return self.db
 
 
-class LoadFromXML(Loader):
+class LoadFromXML(FileLoader):
+
     def load(self):
 
         root = ET.parse(self.pwd_file).getroot()
@@ -170,11 +113,10 @@ class LoadFromXML(Loader):
 
             self.db.update({code: car})
 
-        # self.db.update(self.db)
         return self.db
 
 
-class LoadFromYAML(Loader):
+class LoadFromYAML(FileLoader):
 
     def load(self):
         with open(self.pwd_file, 'r') as f:
@@ -192,31 +134,31 @@ class LoadFromYAML(Loader):
 
                 self.db.update({code: car})
 
-            # self.db.update(self.db)
-            return self.db
+        return self.db
 
 
-def client(loader: InterfaceLoader):
-    data = loader.load()
-    OUTSIDE_DB.update(data)
+class ListLoader(Loader):
+
+    def __init__(self, daddies: List[Loader]):
+        super().__init__()
+        self.daddies = daddies
+
+    def load(self):
+        for daddy in self.daddies:
+            self.db.update(daddy.load())
+
+        return self.db
 
 
 if __name__ == "__main__":
 
-    _csv = LoadFromCSV('load_cars.csv', spliter=";")
-    _json = LoadFromJSON('load_cars.json')
-    _xml = LoadFromXML('load_cars.xml')
-    _yaml = LoadFromYAML('load_cars.yaml')
+    loader = ListLoader([
+        LoadFromCSV('load_cars.csv', spliter=";"),
+        LoadFromJSON('load_cars.json'),
+        LoadFromXML('load_cars.xml'),
+        LoadFromYAML('load_cars.yaml')
+    ])
+    data = loader.load()
 
-    proxy = ProxyLoader([_csv, _json, _xml, _yaml])
-    proxy.load()
-
-    data = proxy.load2()
     OUTSIDE_DB.update(data)
-
-    # V-2
-    # files_list = ['load_cars.csv', 'load_cars.json', 'load_cars.xml', 'load_cars.yaml']
-    # proxy = ProxyLoader2(files_list)
-    # proxy.load()
-
     print_db()
