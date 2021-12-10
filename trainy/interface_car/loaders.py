@@ -3,47 +3,29 @@ import json
 import yaml
 import xml.etree.ElementTree as ET
 
+from typing import List
+
 from factorys import CarMTCarFactory, CarATCarFactory, AbcCarFactory
 
-'''
-Написать иерархический список обучения.
+OUTSIDE_DB = {}
 
 
+def print_db():
+    for k, v in OUTSIDE_DB.items():
+        print('\U0001F90C ', k, v)
 
-'''
 
-
-class DB(ABC):
-    def __init__(self):
-        self._data = {}
-
+class InterfaceLoader(ABC):
     @abstractmethod
-    def insert(self, data):
+    def load(self):
         pass
 
-    @abstractmethod
-    def select(self, key):
-        pass
 
-    def print_db(self):
-        for k, v in self._data.items():
-            print('\U0001F90C ', k, v)
+class Loader(InterfaceLoader):
 
-
-class MyDB(DB):
-
-    def insert(self, data):
-        self._data.update(data)
-
-    def select(self, key):
-        return self._data.get(key)
-
-
-class Loader(ABC):
-
-    def __init__(self, pwd_file, db, spliter: str = None):
+    def __init__(self, pwd_file, spliter: str = None):
         self.pwd_file = pwd_file
-        self.db = db
+        self.db = {}
 
         self.spliter = spliter if spliter is not None else ';'
         self.factory = {
@@ -64,10 +46,70 @@ class Loader(ABC):
         return factory.create_car(engine, transmission, car_name)
 
 
-class LoadFromCSV(Loader):
-    def load(self):
-        temp = {}
+class ProxyLoader(InterfaceLoader):
 
+    def __init__(self, daddies: List[Loader]):
+        self.daddies = daddies
+        self.catalog = {}
+
+    def load(self):
+        for daddy in self.daddies:
+            self.catalog.update(daddy.load())
+
+        self.save() # ?
+
+    def load2(self):
+        for daddy in self.daddies:
+            self.catalog.update(daddy.load())
+
+        return self.catalog # ?
+
+    # === ??? ====
+    def save(self):
+        OUTSIDE_DB.update(self.catalog)
+    # === ??? ====
+
+
+class ProxyLoader2(InterfaceLoader):
+
+    def __init__(self, file_list: list):
+        self.file_dict: dict = self.get_type_file_dict(file_list)
+        self.daddies = {
+            'csv': LoadFromCSV,
+            'json': LoadFromJSON,
+            'xml': LoadFromXML,
+            'yaml': LoadFromYAML
+        }
+        self.catalog = {}
+
+    def load(self):
+        for type_file, file_path in self.file_dict.items():
+            loader = self.daddies.get(type_file)
+            self.catalog.update(loader(file_path).load())
+
+        self.save() # ?
+        return self.catalog # ?
+
+    # === ??? ====
+    def save(self):
+        OUTSIDE_DB.update(self.catalog)
+    # === ??? ====
+
+    def get_type_file_dict(self, file_list):
+        file_dict = {}
+
+        for file_path in file_list:
+            type_file = file_path.split('.')[1]
+            file_dict.update({
+                type_file: file_path
+            })
+
+        return file_dict
+
+
+class LoadFromCSV(Loader):
+
+    def load(self):
         with open(self.pwd_file, 'r') as f:
             for i in f:
                 data = i.split(self.spliter)
@@ -82,14 +124,15 @@ class LoadFromCSV(Loader):
 
                 car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
-                temp.update({code: car})
+                self.db.update({code: car})
 
-        self.db.insert(temp)
+        # self.db.update(self.db)
+        return self.db
 
 
 class LoadFromJSON(Loader):
+
     def load(self):
-        temp = {}
         with open(self.pwd_file) as file:
             j = json.load(file)
             for e in j:
@@ -103,14 +146,15 @@ class LoadFromJSON(Loader):
 
                 car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
-                temp.update({code: car})
+                self.db.update({code: car})
 
-        self.db.insert(temp)
+        # self.db.update(self.db)
+        return self.db
 
 
 class LoadFromXML(Loader):
     def load(self):
-        temp = {}
+
         root = ET.parse(self.pwd_file).getroot()
 
         for i in root.findall('element'):
@@ -124,16 +168,15 @@ class LoadFromXML(Loader):
 
             car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
-            temp.update({code: car})
+            self.db.update({code: car})
 
-        self.db.insert(temp)
+        # self.db.update(self.db)
+        return self.db
 
 
 class LoadFromYAML(Loader):
 
     def load(self):
-        temp = {}
-
         with open(self.pwd_file, 'r') as f:
             file = yaml.safe_load(f)
             for i in file:
@@ -147,23 +190,33 @@ class LoadFromYAML(Loader):
 
                 car = self.construct_car(t_type, engine_rpm, engine_idle, t_ratio_list, t_name, car_name)
 
-                temp.update({code: car})
+                self.db.update({code: car})
 
-            self.db.insert(temp)
+            # self.db.update(self.db)
+            return self.db
+
+
+def client(loader: InterfaceLoader):
+    data = loader.load()
+    OUTSIDE_DB.update(data)
 
 
 if __name__ == "__main__":
-
-    db = MyDB()
 
     _csv = LoadFromCSV('load_cars.csv', spliter=";")
     _json = LoadFromJSON('load_cars.json')
     _xml = LoadFromXML('load_cars.xml')
     _yaml = LoadFromYAML('load_cars.yaml')
 
-    _csv.load()
-    _json.load()
-    _xml.load()
-    _yaml.load()
+    proxy = ProxyLoader([_csv, _json, _xml, _yaml])
+    proxy.load()
 
-    db.print_db()
+    data = proxy.load2()
+    OUTSIDE_DB.update(data)
+
+    # V-2
+    # files_list = ['load_cars.csv', 'load_cars.json', 'load_cars.xml', 'load_cars.yaml']
+    # proxy = ProxyLoader2(files_list)
+    # proxy.load()
+
+    print_db()
