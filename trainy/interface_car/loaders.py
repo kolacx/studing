@@ -5,6 +5,13 @@ import xml.etree.ElementTree as ET
 
 from factorys import CarMTCarFactory, CarATCarFactory, AbcCarFactory
 
+'''
+Написать иерархический список обучения.
+
+
+
+'''
+
 
 class DB(ABC):
     def __init__(self):
@@ -29,12 +36,12 @@ class MyDB(DB):
         self._data.update(data)
 
     def select(self, key):
-        self._data.get(key)
+        return self._data.get(key)
 
 
 class Loader(ABC):
 
-    def __init__(self, pwd_file, db: DB, spliter: str = None):
+    def __init__(self, pwd_file, db, spliter: str = None):
         self.pwd_file = pwd_file
         self.db = db
 
@@ -149,10 +156,10 @@ if __name__ == "__main__":
 
     db = MyDB()
 
-    _csv = LoadFromCSV('load_cars.csv', db, spliter=";")
-    _json = LoadFromJSON('load_cars.json', db)
-    _xml = LoadFromXML('load_cars.xml', db)
-    _yaml = LoadFromYAML('load_cars.yaml', db)
+    _csv = LoadFromCSV('load_cars.csv', spliter=";")
+    _json = LoadFromJSON('load_cars.json')
+    _xml = LoadFromXML('load_cars.xml')
+    _yaml = LoadFromYAML('load_cars.yaml')
 
     _csv.load()
     _json.load()
