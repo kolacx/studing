@@ -5,14 +5,26 @@ import xml.etree.ElementTree as ET
 
 from typing import List
 
-from factorys import CarMTCarFactory, CarATCarFactory, AbcCarFactory
+from factorys import CarMTCarFactory, CarATCarFactory
+from settings import OUTSIDE_DB, print_db
 
-OUTSIDE_DB = {}
+'''
+
+Обдумать варианты возможности выбрать машину с каталога.
 
 
-def print_db():
-    for k, v in OUTSIDE_DB.items():
-        print('\U0001F90C ', k, v)
+Фабрика для создания и (конструирования) предзаданных машин.
+
+Нам нужно сделать Фабрику для конструирования предзаданных машины.
+То есть нам нужно создать то что будет создавать предзаданность машины?
+Получаем предзаданную машину.
+
+---------
+
+Нужно дать возможность выбирать предзаданную машину для Клиента.
+
+
+'''
 
 
 class Loader(ABC):
@@ -44,7 +56,7 @@ class FileLoader(Loader):
         self.pwd_file = pwd_file
 
     def load(self):
-        NotImplementedError('Need Implements')
+        raise NotImplementedError('Need Implements')
 
 
 class LoadFromCSV(FileLoader):
@@ -161,4 +173,10 @@ if __name__ == "__main__":
     data = loader.load()
 
     OUTSIDE_DB.update(data)
-    print_db()
+    # print_db()
+
+    from factorys import PredeterminedCarFactory
+
+    car = PredeterminedCarFactory().create_car('ks_6500_X4BA4_at')
+    print(car)
+
