@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 
 from typing import List
 
-from factorys import CarMTCarFactory, CarATCarFactory
+from factorys import CarMTCarFactory, CarATCarFactory, CarsCatalog, Catalog
 from settings import OUTSIDE_DB, print_db
 
 '''
@@ -162,6 +162,11 @@ class ListLoader(Loader):
         return self.db
 
 
+def client(factory: CarsCatalog):
+    car = factory.get('ks_6500_X4BA4_at')
+    print(car)
+
+
 if __name__ == "__main__":
 
     loader = ListLoader([
@@ -175,8 +180,6 @@ if __name__ == "__main__":
     OUTSIDE_DB.update(data)
     # print_db()
 
-    from factorys import PredeterminedCarFactory
-
-    car = PredeterminedCarFactory().create_car('ks_6500_X4BA4_at')
-    print(car)
+    f1 = CarsCatalog()
+    client(f1)
 
