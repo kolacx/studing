@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 from cars import CarMT, CarAT, Car
 from engines import Engine
+from factorys import CarCatalog, AbcSimulator, SimulatorATFactory
 from simulator import SimulatorMT, SimulatorAT, Simulator
 from transmissions import MT, AT
 from display import DisplayMT, DisplayAT, bcolors, Display
+
+from loaders import ListLoader, LoadFromCSV, LoadFromJSON, LoadFromXML, LoadFromYAML
+
 
 '''
 План капкан.
@@ -51,11 +55,11 @@ at3 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE3')
 at4 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE4')
 at5 = AT([3.99, 2.65, 1.81, 1.39, 1.16, 1], 'ATFE5')
 
-engine1 = Engine(5500)
-engine2 = Engine(6500)
-engine3 = Engine(7500)
-engine4 = Engine(8500)
-engine5 = Engine(9500)
+engine1 = Engine(5500, 750)
+engine2 = Engine(6500, 750)
+engine3 = Engine(7500, 750)
+engine4 = Engine(8500, 750)
+engine5 = Engine(9500, 750)
 
 nissan = CarMT(engine1, mt1, 'Nissan')
 porsche = CarMT(engine2, mt2, 'Porsche')
@@ -123,4 +127,3 @@ if __name__ == "__main__":
         simulator = SimulatorAT(car, display)
         print(simulator.get_ctrl_key())
         simulator.drive()
-#

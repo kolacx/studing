@@ -17,17 +17,6 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-car_status_map = {
-    CarStatus.started: 'Engine is Started. Bo-Bo-Bo-Bo-Bo-Bo-Bo',
-    CarStatus.stopped: 'Engine is Stoped...',
-    # CarStatus.info_run_engine: bcolors.FAIL + 'First Start Engine <S>' + bcolors.ENDC,
-    # CarStatus.info_rpm_cutoff: bcolors.FAIL + 'RATA-TA-TA-TA-TA-TA-TA-TA' + bcolors.ENDC,
-    # CarStatus.info_rpm_up: 'RPM UP',
-    # CarStatus.info_rpm_down: 'RPM DOWN',
-    # CarStatus.error_engine_down: bcolors.FAIL + 'Engine is down. See you at retake' + bcolors.ENDC
-}
-
-
 class Display(ABC):
     def __init__(self, car: Car):
         self.car = car

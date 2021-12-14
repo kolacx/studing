@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from cars import CarMT, CarAT, Car
-from display import DisplayMT, DisplayAT
+from display import DisplayMT, DisplayAT, Display
 from engines import Engine
 from simulator import Simulator, SimulatorMT, SimulatorAT
 from transmissions import MT, AT, GearBox
@@ -58,6 +58,8 @@ class TransmissionATBuilder(TransmissionBuilder):
     def build(self):
         return AT(self.ratio_list, self.name)
 
+from display import DisplayMT, DisplayAT
+from factorys import CarATCarFactory, CarMTCarFactory
 
 # ========= Work with CAR =========
 

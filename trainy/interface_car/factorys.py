@@ -2,8 +2,9 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from cars import Car, CarMT, CarAT
+from display import DisplayAT, DisplayMT, Display
 from engines import Engine
-from settings import OUTSIDE_DB
+from simulator import SimulatorAT, SimulatorMT, Simulator
 from transmissions import GearBox, AT, MT
 
 
@@ -34,6 +35,39 @@ class CarMTCarFactory(AbcCarFactory):
 
     def create_car(self, engine: Engine, transmission: MT, name: str) -> CarMT:
         return CarMT(engine, transmission, name)
+
+
+class CarCatalog:
+
+    def __init__(self, db):
+        self.db = db
+
+    def get_by_code(self, code):
+        return self.db.get(code)
+
+
+class SimulatorFactory(ABC):
+
+    def __init__(self):
+        self.simulator = None
+
+    @abstractmethod
+    def create_simulator(self, car: Car) -> Simulator:
+        pass
+
+
+class SimulatorMTFactory(SimulatorFactory):
+
+    def create_simulator(self, car: CarMT) -> SimulatorMT:
+        display = DisplayMT(car)
+        return SimulatorMT(car=car, display=display)
+
+
+class SimulatorATFactory(SimulatorFactory):
+
+    def create_simulator(self, car: CarAT) -> SimulatorAT:
+        display = DisplayAT(car)
+        return SimulatorAT(car=car, display=display)
 
 
 '''
@@ -159,36 +193,3 @@ class ByCode(Search):
 Тогда получается у нас будет общий класс каталог и производные/
 
 '''
-
-
-class Catalog(ABC):
-    @abstractmethod
-    def all(self):
-        pass
-
-    @abstractmethod
-    def by_code(self, code):
-        pass
-
-
-class CarCatalog(Catalog):
-
-    def _get_by_arg(self, ar):
-        cars = []
-        for car in OUTSIDE_DB.values():
-            if car.engine.get_max_rpm() == ar:
-                cars.append(car)
-
-        return cars
-
-    def all(self):
-        return OUTSIDE_DB
-
-    def by_code(self, code):
-        return OUTSIDE_DB.get(code)
-
-    def by_engine_maxrpm(self, rpm) -> List[Car]:
-        return self._get_by_arg(rpm)
-
-    def by_transmission_type(self, t_type) -> List[Car]:
-        return self._get_by_arg(t_type)
