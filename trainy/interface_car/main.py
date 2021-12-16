@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from cars import CarMT, CarAT, Car
 from engines import Engine
-from factorys import CarCatalog, AbcSimulator, SimulatorATFactory
+from factorys import CarCatalog, SimulatorATFactory
 from simulator import SimulatorMT, SimulatorAT, Simulator
 from transmissions import MT, AT
 from display import DisplayMT, DisplayAT, bcolors, Display

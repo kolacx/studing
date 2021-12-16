@@ -135,7 +135,6 @@ class SimulatorAT(Simulator):
         return ctrl
 
     def start_car(self, key):
-        print(self.car, '<<<<<<----------')
         self.car.start()
 
     def stop_car(self, key):

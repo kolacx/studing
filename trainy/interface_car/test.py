@@ -1,7 +1,7 @@
-from cars import Car
+from cars import Car, CarAT, CarMT
 from factorys import CarCatalog, SimulatorMTFactory, SimulatorFactory, SimulatorATFactory, CarMTCarFactory
 from loaders import ListLoader, LoadFromCSV, LoadFromJSON, LoadFromYAML, LoadFromXML
-from transmissions import MT
+from transmissions import MT, AT
 
 db = ListLoader([
     LoadFromCSV('load_cars.csv', ';'),
@@ -10,14 +10,15 @@ db = ListLoader([
     LoadFromXML('load_cars.xml')
 ]).load()
 
-catalog = CarCatalog(db)
 
+def create_simulator_by_car(car: [CarMT, CarAT]):
 
-def do_sim(car):
-    if isinstance(car.transmission, MT):
+    if type(car.transmission) == MT:
         factory = SimulatorMTFactory()
-    else:
+    elif type(car.transmission) == AT:
         factory = SimulatorATFactory()
+    else:
+        raise TypeError
 
     return factory.create_simulator(car)
 
@@ -25,7 +26,20 @@ def do_sim(car):
 if __name__ == "__main__":
     print('Test')
 
-    car = catalog.get_by_code('ff_6500_MMT6_mt')
-    simulator = do_sim(car)
+    catalog = CarCatalog(db)
+
+    max_len_key = max(catalog.db.keys(), key=len)
+
+    for i, (k, v) in enumerate(catalog.db.items()):
+        space = len(max_len_key) - len(k)
+        print(i, k, ' ' * space, v)
+
+    id_car = int(input('Number: '))
+    car_code = list(catalog.db.keys())[id_car]
+
+    # ====== ||| ======
+
+    car = catalog.get_by_code(car_code)
+    simulator = create_simulator_by_car(car)
 
     simulator.drive()

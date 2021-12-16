@@ -9,6 +9,9 @@ class GearBox(ABC):
     def __str__(self):
         return self.name
 
+    def get_ratio(self):
+        return self._ratio
+
 
 class MT(GearBox):
     def __init__(self, ratio_list: list, name):

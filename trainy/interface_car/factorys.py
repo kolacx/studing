@@ -1,23 +1,33 @@
 from abc import ABC, abstractmethod
-from typing import List
 
 from cars import Car, CarMT, CarAT
 from display import DisplayAT, DisplayMT, Display
 from engines import Engine
 from simulator import SimulatorAT, SimulatorMT, Simulator
 from transmissions import GearBox, AT, MT
+from wheels import Wheel, Tire
 
 
 class AbcCarFactory(ABC):
     def create_engine(self, max_rpm: int, idle: int) -> Engine:
         return Engine(max_rpm, idle)
 
+    def create_tire(self,
+                    brand: str = 'Michelin', radius: int = 18,
+                    width: int = 245, height: int = 50) -> Tire:
+        return Tire(brand, radius, width, height)
+
+    def create_wheel(self,
+                     tire, w_brand: str = 'BBS',
+                     w_radius: int = 18, w_width: int = 9) -> Wheel:
+        return Wheel(w_brand, w_radius, w_width, tire)
+
     @abstractmethod
     def create_transmission(self, ratio_list: list, name: str) -> GearBox:
         pass
 
     @abstractmethod
-    def create_car(self, engine: Engine, transmission: GearBox, name: str) -> Car:
+    def create_car(self, engine: Engine, transmission: GearBox, name: str, wheel) -> Car:
         pass
 
 
@@ -25,16 +35,16 @@ class CarATCarFactory(AbcCarFactory):
     def create_transmission(self, ratio_list: list, name: str) -> AT:
         return AT(ratio_list, name)
 
-    def create_car(self, engine: Engine, transmission: AT, name: str) -> CarAT:
-        return CarAT(engine, transmission, name)
+    def create_car(self, engine: Engine, transmission: AT, name: str, wheel: Wheel) -> CarAT:
+        return CarAT(engine, transmission, name, wheel)
 
 
 class CarMTCarFactory(AbcCarFactory):
     def create_transmission(self, ratio_list: list, name: str) -> MT:
         return MT(ratio_list, name)
 
-    def create_car(self, engine: Engine, transmission: MT, name: str) -> CarMT:
-        return CarMT(engine, transmission, name)
+    def create_car(self, engine: Engine, transmission: MT, name: str, wheel: Wheel) -> CarMT:
+        return CarMT(engine, transmission, name, wheel)
 
 
 class CarCatalog:
@@ -47,9 +57,6 @@ class CarCatalog:
 
 
 class SimulatorFactory(ABC):
-
-    def __init__(self):
-        self.simulator = None
 
     @abstractmethod
     def create_simulator(self, car: Car) -> Simulator:

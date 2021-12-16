@@ -5,10 +5,11 @@ from enums import CarStatus, ATGearboxModes
 
 
 class Car(ABC):
-    def __init__(self, engine: Engine, transmission: GearBox, model):
+    def __init__(self, engine: Engine, transmission: GearBox, model, wheel):
         self.model = model
         self.engine = engine
         self.transmission = transmission
+        self.wheel = wheel
 
     @abstractmethod
     def start(self):
@@ -33,8 +34,8 @@ class Car(ABC):
 class CarMT(Car):
     transmission: MT
 
-    def __init__(self, engine, transmission, name, cutoff=500, engine_idle=750):
-        super().__init__(engine, transmission, name)
+    def __init__(self, engine, transmission, name, wheel, cutoff=500, engine_idle=750):
+        super().__init__(engine, transmission, name, wheel)
         self.cutoff = cutoff
         self.engine_idle = engine_idle
 
@@ -62,10 +63,10 @@ class CarMT(Car):
 class CarAT(CarMT):
     transmission: AT
 
-    def __init__(self, engine, transmission, name, rpm_for_down=1000, rpm_for_up=1000,
+    def __init__(self, engine, transmission, name, wheel, rpm_for_down=1000, rpm_for_up=1000,
                  default_shift_height=3000, default_shift_low=1000):
 
-        super().__init__(engine, transmission, name)
+        super().__init__(engine, transmission, name, wheel)
         self.mode = ATGearboxModes.parking
 
         self.rpm_for_down = rpm_for_down

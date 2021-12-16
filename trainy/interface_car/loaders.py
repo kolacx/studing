@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import json
 import yaml
 import xml.etree.ElementTree as ET
+from threading import Thread
 
 from typing import List
 
@@ -45,7 +46,10 @@ class Loader(ABC):
         engine = factory.create_engine(engine_rpm, engine_idle)
         transmission = factory.create_transmission(t_ratio_list, t_name)
 
-        return factory.create_car(engine, transmission, car_name)
+        tire = factory.create_tire()
+        wheel = factory.create_wheel(tire)
+
+        return factory.create_car(engine, transmission, car_name, wheel)
 
 
 class FileLoader(Loader):
@@ -161,20 +165,22 @@ class ListLoader(Loader):
         return self.db
 
 
-def client(catalog: CarCatalog):
-    car = catalog.get_by_code('ks_6500_X4BA4_at')
-    print(car)
-    return car
+# def client(catalog: CarCatalog):
+#     car = catalog.get_by_code('ks_6500_X4BA4_at')
+#     print(car)
+#     return car
 
 
-if __name__ == "__main__":
-
-    data = ListLoader([
-        LoadFromCSV('load_cars.csv', spliter=";"),
-        LoadFromJSON('load_cars.json'),
-        LoadFromXML('load_cars.xml'),
-        LoadFromYAML('load_cars.yaml')
-    ]).load()
-
-    car = client(CarCatalog(data))
-
+# if __name__ == "__main__":
+#
+#     data = ListLoader([
+#         LoadFromCSV('load_cars.csv', spliter=";"),
+#         LoadFromJSON('load_cars.json'),
+#         LoadFromXML('load_cars.xml'),
+#         LoadFromYAML('load_cars.yaml')
+#     ]).load()
+#
+#
+#     car = client(CarCatalog(data))
+#
+#
